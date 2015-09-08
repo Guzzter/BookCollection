@@ -1,0 +1,115 @@
+﻿@model BookCollection.Models.Book
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Book</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AlternativeTitle)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AlternativeTitle)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreationDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreationDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.InitialPrintedYear)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.InitialPrintedYear)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ActualPrintYear)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ActualPrintYear)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Language)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Language)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Material)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Material)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Read)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Read)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Pages)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Pages)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ISBN)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ISBN)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Website)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Website)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CoverLink)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CoverLink)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.BookID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

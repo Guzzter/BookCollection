@@ -1,0 +1,126 @@
+﻿@model PagedList.IPagedList<BookCollection.Models.Book>
+@using PagedList.Mvc;
+
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewBag.Title = "Books";
+}
+
+<h2>Books</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+@using (Html.BeginForm("Index", "Books", FormMethod.Get))
+{
+    <p>
+        Category: @Html.DropDownList("BookCategory", "All")
+        Title or Author: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+        Serie: @Html.DropDownList("Serie", "All")
+        <input type="submit" value="Filter" />
+    </p>
+}
+
+<table class="table table-hover">
+    <tr>
+        <th>
+        </th>
+        <th>
+            @Html.ActionLink("Title", "Index", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })
+        </th>
+        <th>
+            @Html.ActionLink("Author", "Index", new { sortOrder = ViewBag.AuthorSortParm, currentFilter = ViewBag.CurrentFilter })
+        </th>
+        <th>
+            @Html.ActionLink("Publisher", "Index", new { sortOrder = ViewBag.PublisherSortParm, currentFilter = ViewBag.CurrentFilter })
+        </th>
+        <th>
+            @Html.ActionLink("Year", "Index", new { sortOrder = ViewBag.YearSortParm, currentFilter = ViewBag.CurrentFilter })
+        </th>
+        <th>
+            @Html.ActionLink("Category", "Index", new { sortOrder = ViewBag.CategorySortParm, currentFilter = ViewBag.CurrentFilter })
+        </th>
+        <th>
+            @Html.ActionLink("Serie", "Index", new { sortOrder = ViewBag.SerieSortParm, currentFilter = ViewBag.CurrentFilter })
+        </th>
+        <th style="width:200px"></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            <img src="~/Images/Flags/@Html.Raw(item.Language)@Html.Raw(".png")" alt="Taal: @Html.Raw(item.Language)" />
+            <span class="badge">
+                @{
+                switch (item.Material)
+                {
+                case BookCollection.Models.Material.HardCover:
+                // Use the text block below to separate html elements from code
+                <text>HAC</text>
+                break;  // Always break each case
+                case BookCollection.Models.Material.SoftCover:
+                <text>SOC</text>
+                break;
+                case BookCollection.Models.Material.Deluxe:
+                <text>LUX</text>
+                break;
+                case BookCollection.Models.Material.Summary:
+                <text>SUM</text>
+                break;
+                case BookCollection.Models.Material.Pocket:
+                <text>POC</text>
+                break;
+                case BookCollection.Models.Material.SeparateBox:
+                <text>SEP</text>
+                break;
+                default:
+                <text>?</text>
+                break;
+                }
+                }
+                </span>
+                @{
+                if (item.Read)
+                {
+                <text><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></text>
+                }
+                else
+                {
+                <text><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></text>
+                }
+                }
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Title)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MainAuthor)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Publisher.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ActualPrintYear)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Category.Title)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Serie)
+        </td>
+        <td>
+            <a href="@Url.Action("Edit", new { id = item.BookID })" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit</a>
+            <a href="@Url.Action("Details", new { id = item.BookID })" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Details</a>
+            <a href="@Url.Action("Delete", new { id = item.BookID })" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Delete</a>
+        </td>
+    </tr>
+}
+
+</table>
+<br />
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index",
+    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))

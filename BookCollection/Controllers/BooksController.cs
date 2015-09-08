@@ -14,7 +14,12 @@ namespace BookCollection.Controllers
 {
     public class BooksController : Controller
     {
-        private BookContext db = new BookContext();
+        private IBookContext _db;
+
+        public BooksController(IBookContext dbContext)
+        {
+            _db = dbContext;
+        }
 
         // GET: Books
         public ActionResult Index(string sortOrder, string currentFilter, string bookCategory, string serie, string searchString, int? page, bool noPaging = false)
@@ -40,8 +45,8 @@ namespace BookCollection.Controllers
 
             ViewBag.CurrentFilter = searchString;
 
-            var books = from s in db.Books
-                        select s;
+            var books = _db.Query<Book>();
+
             if (!string.IsNullOrEmpty(searchString))
             {
                 books = books.Where(s => s.Title.Contains(searchString)
@@ -107,9 +112,7 @@ namespace BookCollection.Controllers
         {
             var CatLst = new List<string>();
 
-            var GenreQry = from d in db.Categories
-                           orderby d.Title
-                           select d.Title;
+            var GenreQry = _db.Query<Category>().OrderBy(c => c.Title).Select(c => c.Title);
 
             CatLst.AddRange(GenreQry.Distinct());
             ViewBag.BookCategory = new SelectList(CatLst);
@@ -119,7 +122,7 @@ namespace BookCollection.Controllers
         {
             var serie = new List<string>();
 
-            var SerieQry = db.Books.Select(t => t.Serie);
+            var SerieQry = _db.Query<Book>().Select(t => t.Serie);
 
             serie.AddRange(SerieQry.Distinct());
             ViewBag.Serie = new SelectList(serie);
@@ -132,7 +135,8 @@ namespace BookCollection.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Book book = db.Books.Find(id);
+            // TODO: simplify
+            Book book = _db.Query<Book>().FirstOrDefault(b => b.BookID == id);
             if (book == null)
             {
                 return HttpNotFound();
@@ -159,8 +163,8 @@ namespace BookCollection.Controllers
             if (ModelState.IsValid)
             {
                 
-                db.Books.Add(book);
-                db.SaveChanges();
+                _db.Add(book);
+                _db.SaveChanges();
                 return RedirectToAction("Index");
             }
             PopulateAuthorDropDownList(book.AuthorID);
@@ -170,16 +174,12 @@ namespace BookCollection.Controllers
 
         private void PopulateAuthorDropDownList(object selected = null)
         {
-            var query = from d in db.Authors
-                        orderby d.Lastname
-                        select d;
+            var query = _db.Query<Author>().OrderBy(a => a.Lastname);
             ViewBag.AuthorID = new SelectList(query, "AuthorID", "Fullname", selected);
         }
         private void PopulateCategoryDropDownList(object selected = null)
         {
-            var query = from d in db.Categories
-                                   orderby d.Title
-                                   select d;
+            var query = _db.Query<Category>().OrderBy(a => a.Title);
             ViewBag.CategoryID = new SelectList(query, "CategoryID", "Title", selected);
         }
         // GET: Books/Edit/5
@@ -189,7 +189,7 @@ namespace BookCollection.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Book book = db.Books.Find(id);
+            Book book = _db.Query<Book>().FirstOrDefault(b => b.BookID == id);
             if (book == null)
             {
                 return HttpNotFound();
@@ -206,8 +206,8 @@ namespace BookCollection.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(book).State = EntityState.Modified;
-                db.SaveChanges();
+                _db.Update(book);
+                _db.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(book);
@@ -220,7 +220,7 @@ namespace BookCollection.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Book book = db.Books.Find(id);
+            Book book = _db.Query<Book>().FirstOrDefault(b => b.BookID == id);
             if (book == null)
             {
                 return HttpNotFound();
@@ -233,9 +233,9 @@ namespace BookCollection.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Book book = db.Books.Find(id);
-            db.Books.Remove(book);
-            db.SaveChanges();
+            Book book = _db.Query<Book>().FirstOrDefault(b => b.BookID == id);
+            _db.Remove(book);
+            _db.SaveChanges();
             return RedirectToAction("Index");
         }
 
@@ -243,7 +243,7 @@ namespace BookCollection.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                _db.Dispose();
             }
             base.Dispose(disposing);
         }

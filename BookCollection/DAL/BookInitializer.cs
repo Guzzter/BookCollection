@@ -12,7 +12,7 @@ using System.Data.Entity.Validation;
 
 namespace BookCollection.DAL
 {
-    public class BookInitializer : System.Data.Entity.DropCreateDatabaseIfModelChanges<BookContext>
+    public class BookInitializer : System.Data.Entity.CreateDatabaseIfNotExists<BookContext>
     {
         private IEnumerable<seedDataModel> _dataRows;
         private BookContext _c;
@@ -24,7 +24,7 @@ namespace BookCollection.DAL
             _log = new Logging.TraceLogger();
 
             Assembly assembly = Assembly.GetExecutingAssembly();
-            string resourceName = "BookCollection.DAL.seeddata.csv";
+            string resourceName = "BookCollection.DAL.basicseeddata.csv";
             using (Stream stream = assembly.GetManifestResourceStream(resourceName))
             {
                 using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
@@ -99,25 +99,24 @@ namespace BookCollection.DAL
 
         private IEnumerable<Book> GetBooks(IEnumerable<Publisher> pubs, IEnumerable<Author> authors, IEnumerable<Category> cats, IEnumerable<Subject> subs)
         {
-            char[] splitters = new char[] { ',', '\t', ' ' };
+            char[] splitters = new char[] { ',', '\t'};
             var list = new List<Book>();
 
             foreach (var item in _dataRows)
             {
-                string field = item.Titel;
+                string field = item.Title;
                 if (!string.IsNullOrWhiteSpace(field))
                 {
-                    string name = field.FirstCharacterUppercase();
-                    if (!string.IsNullOrEmpty(item.Onderwerp1))
-                    {
-                        var main = item.Onderwerp1.Split(splitters, StringSplitOptions.RemoveEmptyEntries);
-                    }
+                    //if (!string.IsNullOrEmpty(item.Subjects1))
+                    //{
+                    //    var main = item.Subjects1.Split(splitters, StringSplitOptions.RemoveEmptyEntries);
+                    //}
 
                     int? initialPrint = null;
                     int? actualPrint = null;
-                    if (!string.IsNullOrWhiteSpace(item.Jaren2))
+                    if (!string.IsNullOrWhiteSpace(item.PrintedYears))
                     {
-                        var jaren = item.Jaren2.Split(splitters, StringSplitOptions.RemoveEmptyEntries);
+                        var jaren = item.PrintedYears.Split(splitters, StringSplitOptions.RemoveEmptyEntries);
                         if (jaren.Length > 0)
                         {
                             try
@@ -149,38 +148,44 @@ namespace BookCollection.DAL
                     DateTime date;
                     DateTime? nullDate = null;
 
-                    if (!string.IsNullOrWhiteSpace(item.InvoerDatum) && DateTime.TryParse(item.InvoerDatum, out date)) {
+                    if (!string.IsNullOrWhiteSpace(item.CreateDate) && DateTime.TryParse(item.CreateDate, out date)) {
                         nullDate = date;
                     }
 
-                    var auth = authors.FirstOrDefault(a => a.OrigKey == item.Auteur);
-                    var pub = pubs.FirstOrDefault(a => a.Name.Equals(item.Uitgever, StringComparison.OrdinalIgnoreCase));
-
+                    var auth = authors.FirstOrDefault(a => a.OrigKey == item.Author);
+                    var pub = pubs.FirstOrDefault(a => a.Name.Equals(item.Publisher, StringComparison.OrdinalIgnoreCase));
+                    if (pub == null)
+                    {
+                        pub = pubs.FirstOrDefault(a => a.Name.Equals("?", StringComparison.OrdinalIgnoreCase));
+                    }
                     Subject mainSub = null;
                     List<Subject> otherSub = new List<Subject>();
-                    if (!string.IsNullOrWhiteSpace(item.Onderwerp1))
+                    if (!string.IsNullOrWhiteSpace(item.Subjects1))
                     {
-                        var splt = item.Onderwerp1.Split(splitters, StringSplitOptions.RemoveEmptyEntries);
+                        var splt = item.Subjects1.Split(splitters, StringSplitOptions.RemoveEmptyEntries);
                         mainSub = subs.FirstOrDefault(s => s.Name.Equals(splt[0], StringComparison.OrdinalIgnoreCase));
                         
                         if (splt.Length > 1)
                         {
                             for (int i=1; i < splt.Length; i++)
                             {
-                                var dbSup = subs.FirstOrDefault(s => s.Name.Equals(splt[i], StringComparison.OrdinalIgnoreCase));
-                                if (!otherSub.Contains(dbSup)) {
-                                    otherSub.Add(dbSup);
+                                string subTitle = splt[i].Trim();
+                                if (!IsBlacklistedSubject(subTitle)) {
+                                    var dbSup = subs.FirstOrDefault(s => s.Name.Equals(subTitle, StringComparison.OrdinalIgnoreCase));
+                                    if (dbSup != null && !otherSub.Contains(dbSup)) {
+                                        otherSub.Add(dbSup);
+                                    }
                                 }
                             }
                         }
                     }
-                    
 
+                    string name = field.FirstCharacterUppercase();
                     if (list.Count(p => p.Title.Equals(name, StringComparison.OrdinalIgnoreCase)) == 0)
                     {
                         var b = new Book() {
                             Title = name,
-                            AlternativeTitle = item.AlterTitel,
+                            AlternativeTitle = item.AlternativeTitle,
                             Language = GetLangFromCode(item.Code),
                             Material = GetMaterialFromCode(item.Code),
                             ActualPrintYear = actualPrint,
@@ -191,7 +196,7 @@ namespace BookCollection.DAL
                             Publisher = pub,
                             MainSubject = mainSub,
                             Subjects = otherSub,
-                            Code = item.Inhoud
+                            Code = item.Contents
                             
                         };
 
@@ -267,7 +272,7 @@ namespace BookCollection.DAL
 
             foreach (var item in _dataRows)
             {
-                string field = item.Uitgever;
+                string field = item.Publisher;
                 if (!string.IsNullOrWhiteSpace(field))
                 {
                     string name = field.FirstCharacterUppercase();
@@ -278,9 +283,16 @@ namespace BookCollection.DAL
                 }
             }
 
+            list.Add(new Publisher() { Name = "?" });
             return list;
         }
 
+        private bool IsBlacklistedSubject(string subTitle)
+        {
+            if (subTitle.Equals("e.a.") || subTitle.Equals("ea.") || subTitle.Equals("ea"))
+                return true;
+            return false;
+        }
 
         private IEnumerable<Subject> GetSubjects()
         {
@@ -289,21 +301,21 @@ namespace BookCollection.DAL
 
             foreach (var item in _dataRows)
             {
-                var splits = item.Onderwerp1.Split(splitters, StringSplitOptions.RemoveEmptyEntries);
+                var splits = item.Subjects1.Split(splitters, StringSplitOptions.RemoveEmptyEntries);
                 foreach(var i in splits)
                 {
                     var name = i.Trim().FirstCharacterUppercase();
-                    if (list.Count(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase)) == 0)
+                    if (!IsBlacklistedSubject(name) && list.Count(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase)) == 0)
                     {
                         list.Add(new Subject() { Name = name });
                     }
                 }
 
-                splits = item.Onderwerp2.Split(splitters, StringSplitOptions.RemoveEmptyEntries);
+                splits = item.Subjects2.Split(splitters, StringSplitOptions.RemoveEmptyEntries);
                 foreach (var i in splits)
                 {
                     var name = i.Trim().FirstCharacterUppercase();
-                    if (list.Count(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase)) == 0)
+                    if (!IsBlacklistedSubject(name) && list.Count(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase)) == 0)
                     {
                         list.Add(new Subject() { Name = name });
                     }
@@ -320,7 +332,7 @@ namespace BookCollection.DAL
 
             foreach (var item in _dataRows)
             {
-                string field = item.Auteur;
+                string field = item.Author;
                 if (!string.IsNullOrWhiteSpace(field))
                 {
                     var fields = field.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);

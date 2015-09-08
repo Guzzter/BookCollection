@@ -7,20 +7,20 @@ namespace BookCollection.DAL
 {
     public class seedDataModel
     {
-        public string Auteur { get; set; }
-        public string Titel { get; set; }
-        public string AlterTitel { get; set; }
+        public string Author { get; set; }
+        public string Title { get; set; }
+        public string AlternativeTitle { get; set; }
         public string Serie { get; set; }
-        public string Uitgever { get; set; }
+        public string Publisher { get; set; }
 
-        public string Jaren2 { get; set; }
+        public string PrintedYears { get; set; }
         public string Type { get; set; }
 
         public string Code { get; set; }
-        public string Onderwerp1 { get; set; }
-        public string Onderwerp2 { get; set; }
+        public string Subjects1 { get; set; }
+        public string Subjects2 { get; set; }
 
-        public string Inhoud { get; set; }
-        public string InvoerDatum { get; set; }
+        public string Contents { get; set; }
+        public string CreateDate { get; set; }
     }
 }

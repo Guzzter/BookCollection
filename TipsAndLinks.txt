@@ -1,0 +1,1 @@
+http://pluralsight.com/training/Player?author=scott-allen&name=mvc4-building-m9-tests&mode=live&clip=0&course=mvc4-building

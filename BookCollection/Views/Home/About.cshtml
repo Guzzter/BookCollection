@@ -4,49 +4,25 @@
     ViewBag.Title = "Book Collection Statistics";
 }
 
-<h2>Book Collection Statistics</h2>
+<h2>Statistics</h2>
 
 
 <table class="table table-hover">
     <tr>
-        <th>
+        <th style="width:50%">
             Type
         </th>
-        <th>
+        <th style="width:50%">
             Count
         </th>
     </tr>
 
     <tr>
         <td>
-            Books
-        </td>
-        <td>
-            @Model.Books
-        </td>
-    </tr>
-    <tr>
-        <td>
             Authors
         </td>
         <td>
             @Model.Authors
-        </td>
-    </tr>
-    <tr>
-        <td>
-            Publishers
-        </td>
-        <td>
-            @Model.Publishers
-        </td>
-    </tr>
-    <tr>
-        <td>
-            Subjects
-        </td>
-        <td>
-            @Model.Subjects
         </td>
     </tr>
     <tr>
@@ -65,29 +41,24 @@
             @Model.Categories
         </td>
     </tr>
-
-</table>
-
-<h2>Catogory statistics</h2>
-<table class="table table-hover">
     <tr>
-        <th>
-            Category Name
-        </th>
-        <th>
-            Books
-        </th>
+        <td>
+            Publishers
+        </td>
+        <td>
+            @Model.Publishers
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Subjects
+        </td>
+        <td>
+            @Model.Subjects
+        </td>
     </tr>
 
-    @foreach (var item in Model.CatGroupStats)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CategoryName)
-            </td>
-            <td>
-                @item.BookCount
-            </td>
-        </tr>
-    }
 </table>
+
+@Html.Partial("_CategoryBooks", Model.CatGroupStats)
+

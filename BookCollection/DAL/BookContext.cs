@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Data.Entity.ModelConfiguration.Conventions;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Web;
 
@@ -14,9 +16,15 @@ namespace BookCollection.DAL
         void Add<T>(T entity) where T : class;
         void Update<T>(T entity) where T : class;
         void Remove<T>(T entity) where T : class;
-        void SaveChanges();
+        int SaveChanges();
         void AddRange<T>(IEnumerable<T> entities) where T : class;
+        IEnumerable<DbEntityValidationResult> GetValidationErrors();
+        int ExecuteSqlCommand(string sqlStatement, params object[] parameters);
+        int ExecuteSqlCommand(string sqlStatement);
+
+        DbRawSqlQuery<T> ExecuteSqlQuery<T>(string sqlStatement, params object[] parameters) where T : class;
     }
+
 
     public class BookContext : DbContext, IBookContext
     {
@@ -76,9 +84,29 @@ namespace BookCollection.DAL
             Set<T>().Remove(entity);
         }
 
-        void IBookContext.SaveChanges()
+        int IBookContext.SaveChanges()
         {
-            SaveChanges();
+            return SaveChanges();
+        }
+
+        IEnumerable<DbEntityValidationResult> IBookContext.GetValidationErrors()
+        {
+            return GetValidationErrors();
+        }
+
+        int IBookContext.ExecuteSqlCommand(string sqlStatement, params object[] parameters)
+        {
+            return Database.ExecuteSqlCommand(sqlStatement, parameters);
+        }
+
+        int IBookContext.ExecuteSqlCommand(string sqlStatement)
+        {
+            return Database.ExecuteSqlCommand(sqlStatement);
+        }
+
+        DbRawSqlQuery<T> IBookContext.ExecuteSqlQuery<T>(string sqlStatement, params object[] parameters)
+        {
+            return Database.SqlQuery<T>(sqlStatement, parameters);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace BookCollection.Controllers
 {
     public class BooksController : Controller
     {
-        private IBookContext _db;
+        private readonly IBookContext _db;
 
         public BooksController(IBookContext dbContext)
         {

@@ -9,6 +9,7 @@ using System.IO;
 using System.Text;
 using GBUtils.Extension;
 using System.Data.Entity.Validation;
+using BookCollection.Helpers;
 
 namespace BookCollection.DAL
 {
@@ -144,7 +145,8 @@ namespace BookCollection.DAL
                     var cat = cats.FirstOrDefault(c => c.Title == catName.FirstCharacterUppercaseRestLowercase());
                     if (cat == null)
                         cat = cats.FirstOrDefault(c => c.Title == "?");
-
+                    
+                    
                     DateTime date;
                     DateTime? nullDate = null;
 
@@ -196,8 +198,10 @@ namespace BookCollection.DAL
                             Publisher = pub,
                             MainSubject = mainSub,
                             Subjects = otherSub,
-                            Code = item.Contents
-                            
+                            Code = item.Contents,
+                            Condition = Condition.Used,
+                            CodeWithinSerie = Converters.ExtractSerieNr(item.Type),
+                            Rating = 0
                         };
 
                         if (auth != null)
@@ -307,7 +311,7 @@ namespace BookCollection.DAL
                     var name = i.Trim().FirstCharacterUppercase();
                     if (!IsBlacklistedSubject(name) && list.Count(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase)) == 0)
                     {
-                        list.Add(new Subject() { Name = name });
+                        list.Add(new Subject() { Name = name.Replace("\"", "") });
                     }
                 }
 
@@ -317,7 +321,7 @@ namespace BookCollection.DAL
                     var name = i.Trim().FirstCharacterUppercase();
                     if (!IsBlacklistedSubject(name) && list.Count(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase)) == 0)
                     {
-                        list.Add(new Subject() { Name = name });
+                        list.Add(new Subject() { Name = name.Replace("\"", "") });
                     }
                 }
 
@@ -383,7 +387,7 @@ namespace BookCollection.DAL
             if (string.IsNullOrWhiteSpace(orig))
                 return "?";
 
-            return orig.Replace("NULL", "?")
+            string temp = orig.Replace("NULL", "?")
                 .Replace("romannetje", "roman")
                 .Replace("anecdotes", "anekdotes")
                 .Replace("biogr. studies", "biografieën")
@@ -397,6 +401,8 @@ namespace BookCollection.DAL
                 .Replace("sutdie", "studie")
                 .Replace("studies", "studie")
                 .Replace("toneelstukken", "toneelstuk");
+
+            return Converters.RemoveSerieNr(temp);
         }
     }
 }

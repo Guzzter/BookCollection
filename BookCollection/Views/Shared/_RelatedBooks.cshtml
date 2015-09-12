@@ -2,6 +2,17 @@
 
 <h2>Related Books</h2>
 
+@if (Model.Count() == 0)
+{
+    <text>Oh, no! No books found...</text>
+
+}
+
+@if (Model.Count() > 0)
+{
+
+
+
 <table class="table table-bordered">
     <tr>
         <th style="width:50%">
@@ -24,7 +35,14 @@
                 @Html.ActionLink(item.Title, "Details", "Books", new { id = item.BookID }, null)
             </td>
             <td>
-                @Html.ActionLink(item.MainAuthor, "Details", "Authors", new { id = item.MainAuthorID }, null)
+                @if (item.MainAuthor == "")
+                {
+                    <text>-</text>
+                }
+                else
+                {
+                    @Html.ActionLink(item.MainAuthor, "Details", "Authors", new { id = item.MainAuthorID }, null)
+                }
             </td>
             <td>
                 @Html.ActionLink(item.Publisher.Name, "Details", "Publishers", new { id = item.PublisherID }, null)
@@ -32,3 +50,5 @@
         </tr>
     }
 </table>
+
+}

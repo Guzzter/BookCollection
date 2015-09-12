@@ -5,10 +5,13 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Details</h2>
+<h2>Category</h2>
 
 <div>
-    <h4>Category</h4>
+    <p>
+        @BC.IconButton("Category", "Edit", "pencil", "Edit", new { id = Model.CategoryID })
+        @BC.IconButton("Category", "Index", "th-list", "Back to List")
+    </p>
     <hr />
     <dl class="dl-horizontal">
         <dt>

@@ -34,7 +34,7 @@ namespace BookCollection.Helpers
         public static MvcHtmlString IconButton(string controller, string action, string iconname, string linktext, int ID = -1)
         {
             object routeVal = (ID == -1 ? null : new { id = ID });
-            return IconButton("", action, iconname, linktext, routeVal);
+            return IconButton(controller, action, iconname, linktext, routeVal);
         }
 
         public static MvcHtmlString IconButton(string controller, string action, string iconname, string linktext, object routeValues)

@@ -1,18 +1,24 @@
-﻿@model IEnumerable<BookCollection.Models.Subject>
+﻿@model PagedList.IPagedList<BookCollection.Models.Subject>
+@using PagedList.Mvc;
+
 
 @{
     ViewBag.Title = "Subjects";
 }
 
-<h2>Subjects</h2>
+<div class="row">
+    <div class="col-md-6"><h2>@ViewBag.Title</h2></div>
+    <div class="col-md-6">
+        <div class="pull-right" style="margin:25px 5px 0 0">
+            @BC.IconButton("Subjects", "Create", "plus", "Add new subject")
+        </div>
+    </div>
+</div>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Name)
+            Name
         </th>
         <th></th>
     </tr>
@@ -23,11 +29,15 @@
             @Html.DisplayFor(modelItem => item.Name)
         </td>
         <td class="text-nowrap">
-            @BC.IconButton("Edit", "pencil", "Edit", item.BookID)
-            @BC.IconButton("Details", "eye-open", "Details", item.BookID)
-            @BC.IconButton("Delete", "remove", "Delete", item.BookID)
+            @BC.IconButton("Subjects", "Edit", "pencil", "Edit", item.SubjectID)
+            @BC.IconButton("Subjects", "Details", "eye-open", "Details", item.SubjectID)
+            @BC.IconButton("Subjects", "Delete", "remove", "Delete", item.SubjectID)
         </td>
     </tr>
 }
 
 </table>
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index",
+    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))

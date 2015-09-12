@@ -548,6 +548,11 @@
     <Content Include="Views\Publishers\Index.cshtml" />
     <Content Include="Views\Home\_CategoryBooks.cshtml" />
     <Content Include="Views\Shared\_RelatedBooks.cshtml" />
+    <Content Include="Views\NewBooks\Create.cshtml" />
+    <Content Include="Views\NewBooks\Delete.cshtml" />
+    <Content Include="Views\NewBooks\Details.cshtml" />
+    <Content Include="Views\NewBooks\Edit.cshtml" />
+    <Content Include="Views\NewBooks\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

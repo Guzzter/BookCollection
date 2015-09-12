@@ -8,8 +8,8 @@
 
 <div>
     <p>
-        @Html.ActionLink("Edit", "Edit", new { id = Model.AuthorID }) |
-        @Html.ActionLink("Back to List", "Index")
+        @BC.IconButton("Authors", "Edit", "pencil", "Edit", new { id = Model.AuthorID })
+        @BC.IconButton("Authors", "Index", "th-list", "Back to List")
     </p>
     <hr />
     <dl class="dl-horizontal">

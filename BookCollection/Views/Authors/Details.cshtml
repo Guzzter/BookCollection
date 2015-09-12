@@ -33,3 +33,5 @@
     @Html.ActionLink("Edit", "Edit", new { id = Model.AuthorID }) |
     @Html.ActionLink("Back to List", "Index")
 </p>
+
+@Html.Partial("_RelatedBooks", Model.Books)

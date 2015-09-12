@@ -23,7 +23,7 @@
     </p>
 }
 
-<table class="table table-hover">
+<table class="table table-hover table-condensed">
     <tr>
         <th>
         </th>
@@ -45,52 +45,17 @@
         <th>
             @Html.ActionLink("Serie", "Index", new { sortOrder = ViewBag.SerieSortParm, currentFilter = ViewBag.CurrentFilter })
         </th>
-        <th style="width:200px"></th>
+        <th></th>
     </tr>
 
 @foreach (var item in Model) {
     <tr>
-        <td>
-            <img src="~/Images/Flags/@Html.Raw(item.Language)@Html.Raw(".png")" alt="Taal: @Html.Raw(item.Language)" />
-            <span class="badge">
-                @{
-                switch (item.Material)
-                {
-                case BookCollection.Models.Material.HardCover:
-                // Use the text block below to separate html elements from code
-                <text>HAC</text>
-                break;  // Always break each case
-                case BookCollection.Models.Material.SoftCover:
-                <text>SOC</text>
-                break;
-                case BookCollection.Models.Material.Deluxe:
-                <text>LUX</text>
-                break;
-                case BookCollection.Models.Material.Summary:
-                <text>SUM</text>
-                break;
-                case BookCollection.Models.Material.Pocket:
-                <text>POC</text>
-                break;
-                case BookCollection.Models.Material.SeparateBox:
-                <text>SEP</text>
-                break;
-                default:
-                <text>?</text>
-                break;
-                }
-                }
-                </span>
-                @{
-                if (item.Read)
-                {
-                <text><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></text>
-                }
-                else
-                {
-                <text><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></text>
-                }
-                }
+        <td class="text-nowrap">
+            <img class="booktool" src="~/Images/Flags/@Html.Raw(item.Language)@Html.Raw(".png")" alt="Taal: @Html.Raw(item.Language)" data-toggle="tooltip" data-placement="top" title="Taal: @Html.Raw(item.Language)" />
+            
+                @BC.MaterialBadge(item.Material)
+
+                @BC.BoolIcon(item.Read, "Gelezen", "Niet gelezen")
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Title)
@@ -110,7 +75,7 @@
         <td>
             @Html.DisplayFor(modelItem => item.Serie)
         </td>
-        <td>
+        <td class="text-nowrap">
             <a href="@Url.Action("Edit", new { id = item.BookID })" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit</a>
             <a href="@Url.Action("Details", new { id = item.BookID })" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Details</a>
             <a href="@Url.Action("Delete", new { id = item.BookID })" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Delete</a>

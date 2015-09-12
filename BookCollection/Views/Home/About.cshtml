@@ -57,8 +57,25 @@
             @Model.Subjects
         </td>
     </tr>
+    <tr>
+        <td>Languages</td>
+        <td>
+            @Model.Languages
+    </td>
+    </tr>
 
 </table>
 
-@Html.Partial("_CategoryBooks", Model.CatGroupStats)
+@Html.Partial("_CategoryBooks", Model.LanguageGroupStats, new ViewDataDictionary() {
+    { "Title", "Books per language" },
+    { "ColumTitle1", "Language" },
+    { "ColumTitle2", "Book count" },
+})
+
+@Html.Partial("_CategoryBooks", Model.CategoryGroupStats, new ViewDataDictionary() {
+    { "Title", "Books per category" },
+    { "ColumTitle1", "Category" },
+    { "ColumTitle2", "Book count" },
+})
+
 

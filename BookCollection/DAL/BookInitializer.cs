@@ -24,7 +24,7 @@ namespace BookCollection.DAL
             _log = new Logging.TraceLogger();
 
             Assembly assembly = Assembly.GetExecutingAssembly();
-            string resourceName = "BookCollection.DAL.basicseeddata.csv";
+            string resourceName = "BookCollection.DAL.madbooks_seeddata.csv";
             using (Stream stream = assembly.GetManifestResourceStream(resourceName))
             {
                 using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))

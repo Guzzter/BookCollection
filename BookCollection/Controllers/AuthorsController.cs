@@ -66,6 +66,10 @@ namespace BookCollection.Controllers
             {
                 return HttpNotFound();
             }
+            else
+            {
+                author.Books = db.Books.Where(b => b.AuthorID == author.AuthorID).ToList();
+            }
             return View(author);
         }
 

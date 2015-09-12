@@ -1,1 +1,11 @@
 http://pluralsight.com/training/Player?author=scott-allen&name=mvc4-building-m9-tests&mode=live&clip=0&course=mvc4-building
+
+
+http://fluentbootstrap.com/GettingStarted#usage
+@Html.Bootstrap().Alert(AlertState.Warning, "Warning", "Yikes, this is a warning.")
+
+Add in Views\web.config:
+        <add namespace="FluentBootstrap" />
+        <add namespace="FluentBootstrap.Mvc" />
+        <add namespace="BookCollection" />
+        <add namespace="BookCollection.Helpers" />

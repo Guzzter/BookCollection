@@ -65,6 +65,9 @@ namespace BookCollection.Controllers
             if (subject == null)
             {
                 return HttpNotFound();
+            }else
+            {
+                subject.Books = db.Books.Where(b => b.MainSubjectID == subject.SubjectID).ToList();
             }
             return View(subject);
         }

@@ -12,7 +12,10 @@ namespace BookCollection.ViewModels
         public int Categories { get; set; }
         public int Subjects { get; set; }
         public int Publishers { get; set; }
+        public int Languages { get; set; }
 
-        public IEnumerable<CategoryGroup> CatGroupStats { get; set; }
+        public IEnumerable<CategoryGroup> CategoryGroupStats { get; set; }
+
+        public IEnumerable<CategoryGroup> LanguageGroupStats { get; set; }
     }
 }

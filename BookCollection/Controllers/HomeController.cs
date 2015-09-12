@@ -33,10 +33,22 @@ namespace BookCollection.Controllers
                                                      CategoryName = catGroup.Key,
                                                      BookCount = catGroup.Count()
                                                  };
-            stats.CatGroupStats = grp.OrderByDescending(cg => cg.BookCount).ThenBy(cg => cg.CategoryName).ToList();
-            stats.Categories = stats.CatGroupStats.Count();
-            
-                // SQL version of the above LINQ code.
+
+            stats.CategoryGroupStats = grp.OrderByDescending(cg => cg.BookCount).ThenBy(cg => cg.CategoryName).ToList();
+            stats.Categories = stats.CategoryGroupStats.Count();
+
+            IQueryable<CategoryGroup> grpLang = from books in db.Books
+                                            group books by books.Language into catGroup
+                                            select new CategoryGroup()
+                                            {
+                                                CategoryName = catGroup.Key.ToString(),
+                                                BookCount = catGroup.Count()
+                                            };
+
+            stats.LanguageGroupStats = grpLang.OrderByDescending(cg => cg.BookCount).ThenBy(cg => cg.CategoryName).ToList();
+            stats.Languages = stats.LanguageGroupStats.Count();
+
+            // SQL version of the above LINQ code.
             //string query = "SELECT EnrollmentDate, COUNT(*) AS StudentCount "
             //    + "FROM Person "
             //    + "WHERE Discriminator = 'Student' "

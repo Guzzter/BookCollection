@@ -1,0 +1,1 @@
+﻿$('.booktool').tooltip(options);

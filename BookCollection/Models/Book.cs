@@ -23,21 +23,27 @@ namespace BookCollection.Models
         [Required]
         public string Title { get; set; }
 
+        #region Unmapped helper field
         [NotMapped]
-        public string MainAuthor { get
+        public string MainAuthor
+        {
+            get
             {
                 Author main = Authors.FirstOrDefault();
-                if (main == null)
-                {
-                    return string.Empty;
-                }
-                else
-                {
-                    return main.Fullname;
-                }
+                return main == null ? string.Empty : main.Fullname;
             }
         }
-        
+
+        [NotMapped]
+        public int MainAuthorID
+        {
+            get
+            {
+                Author main = Authors.FirstOrDefault();
+                return main == null ? 0 : main.AuthorID;
+            }
+        }
+        #endregion
 
         [Display(Name = "Alternative Title")]
         public string AlternativeTitle { get; set; }

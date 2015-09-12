@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<BookCollection.ViewModels.CategoryGroup>
 
-<h2>Category Statistics</h2>
+<h2>@ViewBag.Title</h2>
 <table class="table table-hover">
     <tr>
         <th style="width:50%">
-            Category
+            @ViewBag.ColumTitle1
         </th>
         <th style="width:50%">
-            Book count
+            @ViewBag.ColumTitle2
         </th>
     </tr>
 

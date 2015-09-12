@@ -59,7 +59,7 @@ namespace BookCollection.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index");
             }
             Author author = db.Authors.Find(id);
             if (author == null)

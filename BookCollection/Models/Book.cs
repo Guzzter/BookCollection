@@ -7,8 +7,6 @@ using System.Web;
 
 namespace BookCollection.Models
 {
-    
-
     public class Book
     {
         public Book()
@@ -29,7 +27,7 @@ namespace BookCollection.Models
         {
             get
             {
-                Author main = Authors.FirstOrDefault();
+                Author main = Authors == null ? null : Authors.FirstOrDefault();    
                 return main == null ? string.Empty : main.Fullname;
             }
         }
@@ -39,7 +37,7 @@ namespace BookCollection.Models
         {
             get
             {
-                Author main = Authors.FirstOrDefault();
+                Author main = Authors == null ? null : Authors.FirstOrDefault();
                 return main == null ? 0 : main.AuthorID;
             }
         }
@@ -61,13 +59,22 @@ namespace BookCollection.Models
         public int? ActualPrintYear { get; set; }
 
         [Required]
-        
         public Language Language { get; set; }
         [Required]
         public Material Material { get; set; }
 
+        [Required]
+        public Condition Condition { get; set; }
+
+        public string Location { get; set; }
+
+        [Range(0,5)]
+        public int? Rating { get; set; }
+
         public string Serie { get; set; }
+        public string CodeWithinSerie { get; set; }
         public string Code { get; set; }
+        public string SortField { get; set; }
         public bool Read { get; set; }
         public int Pages { get; set; }
         public string ISBN { get; set; }
@@ -76,6 +83,8 @@ namespace BookCollection.Models
         public string Website { get; set; }
 
         public string CoverLink { get; set; }
+
+        public string ReviewNote { get; set; }
 
         public int AuthorID { get; set; }
         public int CategoryID { get; set; }

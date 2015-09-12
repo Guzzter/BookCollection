@@ -133,7 +133,7 @@ namespace BookCollection.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index");
             }
             // TODO: simplify
             Book book = _db.Query<Book>().FirstOrDefault(b => b.BookID == id);

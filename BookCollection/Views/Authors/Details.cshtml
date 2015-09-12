@@ -1,14 +1,16 @@
 ﻿@model BookCollection.Models.Author
 
 @{
-    ViewBag.Title = "Details";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Author Details";
 }
 
-<h2>Details</h2>
+<h2>@ViewBag.Title</h2>
 
 <div>
-    <h4>Author</h4>
+    <p>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.AuthorID }) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -29,9 +31,6 @@
 
     </dl>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.AuthorID }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+
 
 @Html.Partial("_RelatedBooks", Model.Books)

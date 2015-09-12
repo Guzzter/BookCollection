@@ -4,13 +4,13 @@
 
 <table class="table table-bordered">
     <tr>
-        <th style="width:33%">
+        <th style="width:50%">
             Title
         </th>
-        <th style="width:33%">
+        <th style="width:30%">
             Author
         </th>
-        <th style="width:33%">
+        <th style="width:20%">
             Publisher
         </th>
     </tr>
@@ -24,7 +24,7 @@
                 @Html.ActionLink(item.Title, "Details", "Books", new { id = item.BookID }, null)
             </td>
             <td>
-                @Html.ActionLink(item.MainAuthor, "Details", "Authors", new { id = item.AuthorID }, null)
+                @Html.ActionLink(item.MainAuthor, "Details", "Authors", new { id = item.MainAuthorID }, null)
             </td>
             <td>
                 @Html.ActionLink(item.Publisher.Name, "Details", "Publishers", new { id = item.PublisherID }, null)

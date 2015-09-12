@@ -25,6 +25,34 @@ namespace BookCollection.Helpers
             return new MvcHtmlString(String.Format(spanTemplate, "remove", tooltip));
         }
 
+        public static MvcHtmlString IconButton(string action, string iconname, string linktext, int ID = -1)
+        {
+            object routeVal = (ID == -1 ? null : new { id = ID });
+            return  IconButton("", action, iconname, linktext, routeVal);
+        }
+
+        public static MvcHtmlString IconButton(string controller, string action, string iconname, string linktext, int ID = -1)
+        {
+            object routeVal = (ID == -1 ? null : new { id = ID });
+            return IconButton("", action, iconname, linktext, routeVal);
+        }
+
+        public static MvcHtmlString IconButton(string controller, string action, string iconname, string linktext, object routeValues)
+        {
+            //<a href="@Url.Action("Edit", new { id = item.BookID })" class="btn btn-primary btn-xs">
+            //<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit</a>
+
+            string spanTemplate = "<span class=\"glyphicon glyphicon-{0}\" aria-hidden=\"true\"></span>";
+            string iconHtml = string.IsNullOrEmpty(iconname) ? "" : string.Format(spanTemplate, iconname);
+
+            var urlHelper = new UrlHelper(HttpContext.Current.Request.RequestContext);
+            string url = urlHelper.Action(action, controller, routeValues);
+
+            string linkTemplate = "<a href=\"{0}\" class=\"btn btn-primary btn-xs\">{1} {2}</a>";
+
+            return new MvcHtmlString(String.Format(linkTemplate, url, iconHtml, linktext));
+        }
+
         public static MvcHtmlString MaterialBadge(Models.Material ma)
         {
             

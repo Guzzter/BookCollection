@@ -25,6 +25,14 @@ namespace BookCollection.Models
         SeparateBox
     }
 
+    public enum Condition
+    {
+        NotSpecified,
+        New,
+        Used,
+        Poor
+    }
+
     /// <summary>
     /// Book written language
     /// </summary>

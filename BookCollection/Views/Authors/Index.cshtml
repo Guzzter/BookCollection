@@ -40,10 +40,10 @@
         <td>
             @Html.DisplayFor(modelItem => item.Firstname)
         </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.AuthorID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.AuthorID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.AuthorID })
+        <td class="text-nowrap">
+            @BC.IconButton("Edit", "pencil", "Edit", item.BookID)
+            @BC.IconButton("Details", "eye-open", "Details", item.BookID)
+            @BC.IconButton("Delete", "remove", "Delete", item.BookID)
         </td>
     </tr>
 }

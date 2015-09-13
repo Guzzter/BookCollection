@@ -23,6 +23,7 @@ namespace BookCollection.DAL
         int ExecuteSqlCommand(string sqlStatement);
 
         DbRawSqlQuery<T> ExecuteSqlQuery<T>(string sqlStatement, params object[] parameters) where T : class;
+        void LocalClear<T>() where T : class;
     }
 
 
@@ -62,6 +63,11 @@ namespace BookCollection.DAL
         IQueryable<T> IBookContext.Query<T>()
         {
             return Set<T>();
+        }
+
+        void IBookContext.LocalClear<T>()
+        {
+            Set<T>().Local.Clear();
         }
 
         void IBookContext.Add<T>(T entity)

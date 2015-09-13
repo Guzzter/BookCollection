@@ -10,59 +10,51 @@ using System.Text;
 using GBUtils.Extension;
 using System.Data.Entity.Validation;
 using BookCollection.Helpers;
+using BookCollection.Logging;
 
 namespace BookCollection.DAL
 {
+    
     public class BookInitializer : System.Data.Entity.CreateDatabaseIfNotExists<BookContext>
     {
         private IEnumerable<seedDataModel> _dataRows;
-        private BookContext _c;
-        private Logging.TraceLogger _log;
+        private IBookContext _c;
+        private ILogger _log;
 
         protected override void Seed(BookContext context)
         {
-            _c = context;
-            _log = new Logging.TraceLogger();
+            Seed(context, new TraceLogger(), new CsvSeedDataProvider());
+        }
 
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            string resourceName = "BookCollection.DAL.madbooks_seeddata.csv";
-            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-            {
-                using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
-                {
-                    CsvReader csvReader = new CsvReader(reader);
-                    csvReader.Configuration.IsHeaderCaseSensitive = false;
-                    csvReader.Configuration.WillThrowOnMissingField = false;
-                    csvReader.Configuration.SkipEmptyRecords = true;
-                    csvReader.Configuration.TrimFields = true;
-                    csvReader.Configuration.TrimHeaders = true;
-                    csvReader.Configuration.Delimiter = ";";
-                    
-                    _dataRows = csvReader.GetRecords<seedDataModel>().ToList();
-                }
-            }
+
+        protected void Seed(IBookContext context, ILogger logger, ISeedDataProvider data)
+        {
+            _c = context;
+            _log = logger;
+
+            _dataRows = data.GetData();
 
             var testLimit = 1000000;
             
             var pubs = GetPublishers().Take(testLimit);
-            _c.Publishers.AddRange(pubs);
+            _c.AddRange(pubs);
             _c.SaveChanges();
 
             var authors = GetAuthors().Take(testLimit);
-            _c.Authors.AddRange(authors);
+            _c.AddRange(authors);
             _c.SaveChanges();
 
 
             IEnumerable<Subject> subjects = GetSubjects().Take(testLimit);
-            _c.Subjects.AddRange(subjects);
+            _c.AddRange(subjects);
             _c.SaveChanges();
 
             SeedCategories();
 
-            pubs = _c.Publishers.ToList();
-            authors = _c.Authors.ToList();
-            subjects = _c.Subjects.ToList();
-            var cats = _c.Categories.ToList();
+            pubs = _c.Query<Publisher>().ToList();
+            authors = _c.Query<Author>().ToList();
+            subjects = _c.Query<Subject>().ToList();
+            var cats = _c.Query<Category>().ToList();
 
             IEnumerable<Book> books = GetBooks(pubs, authors, cats, subjects).Take(testLimit);
             foreach (var b in books)
@@ -70,7 +62,7 @@ namespace BookCollection.DAL
                 try
                 {
                     
-                    _c.Books.Add(b);
+                    _c.Add(b);
                     _c.SaveChanges();
 
                 }
@@ -87,7 +79,7 @@ namespace BookCollection.DAL
                                 ve.PropertyName, ve.ErrorMessage);
                         }
                     }
-                    _c.Books.Local.Clear();
+                    _c.LocalClear<Book>();
                 }
                 catch (Exception ex)
                 {
@@ -378,7 +370,7 @@ namespace BookCollection.DAL
             //list.Add(new Category() { Title = "?" });
 
             list.ForEach(c => c.Title = c.Title.FirstCharacterUppercaseRestLowercase());
-            _c.Categories.AddRange(list);
+            _c.AddRange(list);
             _c.SaveChanges();
         }
 

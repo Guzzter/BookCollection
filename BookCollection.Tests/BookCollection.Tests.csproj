@@ -89,7 +89,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DAL\InitiazerTest.cs" />
+    <Compile Include="DAL\BookSeederTest.cs" />
     <Compile Include="Helpers\ConvertersTest.cs" />
     <Compile Include="Helpers\ValidatorsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

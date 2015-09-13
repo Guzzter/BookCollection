@@ -26,7 +26,7 @@ namespace BookCollection.Tests.Controllers
         }
 
         [TestMethod]
-        public void About()
+        /*public void About()
         {
             // Arrange
             HomeController controller = new HomeController();
@@ -37,7 +37,7 @@ namespace BookCollection.Tests.Controllers
             // Assert
             Assert.AreEqual("Your application description page.", result.ViewBag.Message);
         }
-
+        */
         
     }
 }

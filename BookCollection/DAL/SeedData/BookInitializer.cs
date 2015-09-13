@@ -14,26 +14,31 @@ using BookCollection.Logging;
 
 namespace BookCollection.DAL
 {
-    
+
     public class BookInitializer : System.Data.Entity.CreateDatabaseIfNotExists<BookContext>
+    {
+        protected override void Seed(BookContext context)
+        {
+            var bs = new BookSeeder(context, new TraceLogger(), new CsvSeedDataProvider());
+            bs.Run();
+        }
+    }
+
+    public class BookSeeder
     {
         private IEnumerable<seedDataModel> _dataRows;
         private IBookContext _c;
         private ILogger _log;
 
-        protected override void Seed(BookContext context)
-        {
-            Seed(context, new TraceLogger(), new CsvSeedDataProvider());
-        }
-
-
-        protected void Seed(IBookContext context, ILogger logger, ISeedDataProvider data)
+        public BookSeeder(IBookContext context, ILogger logger, ISeedDataProvider data)
         {
             _c = context;
             _log = logger;
-
             _dataRows = data.GetData();
+        }
 
+        public void Run()
+        { 
             var testLimit = 1000000;
             
             var pubs = GetPublishers().Take(testLimit);
@@ -89,8 +94,7 @@ namespace BookCollection.DAL
             
         }
 
-
-        private IEnumerable<Book> GetBooks(IEnumerable<Publisher> pubs, IEnumerable<Author> authors, IEnumerable<Category> cats, IEnumerable<Subject> subs)
+        public IEnumerable<Book> GetBooks(IEnumerable<Publisher> pubs, IEnumerable<Author> authors, IEnumerable<Category> cats, IEnumerable<Subject> subs)
         {
             char[] splitters = new char[] { ',', '\t'};
             var list = new List<Book>();
@@ -185,14 +189,14 @@ namespace BookCollection.DAL
                             ActualPrintYear = actualPrint,
                             InitialPrintedYear = initialPrint,
                             Category = cat,
-                            Serie = item.Serie,
+                            Serie = Converters.RemoveSerieNr(item.Serie),
                             CreationDate = nullDate,
                             Publisher = pub,
                             MainSubject = mainSub,
                             Subjects = otherSub,
                             Code = item.Contents,
                             Condition = Condition.Used,
-                            CodeWithinSerie = Converters.ExtractSerieNr(item.Type),
+                            CodeWithinSerie = Converters.ExtractSerieNr(item.Serie),
                             Rating = 0
                         };
 
@@ -220,7 +224,7 @@ namespace BookCollection.DAL
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
-        private Material GetMaterialFromCode(string code)
+        public Material GetMaterialFromCode(string code)
         {
             if (!string.IsNullOrWhiteSpace(code))
             {
@@ -242,7 +246,7 @@ namespace BookCollection.DAL
             return Material.SoftCover;
         }
 
-        private Language GetLangFromCode(string code)
+        public Language GetLangFromCode(string code)
         {
             if (!string.IsNullOrWhiteSpace(code)) {
                 code = code.ToLowerInvariant();
@@ -262,7 +266,7 @@ namespace BookCollection.DAL
             return Language.Other;
         }
 
-        private IEnumerable<Publisher> GetPublishers()
+        public IEnumerable<Publisher> GetPublishers()
         {
             var list = new List<Publisher>();
 
@@ -283,14 +287,14 @@ namespace BookCollection.DAL
             return list;
         }
 
-        private bool IsBlacklistedSubject(string subTitle)
+        public bool IsBlacklistedSubject(string subTitle)
         {
             if (subTitle.Equals("e.a.") || subTitle.Equals("ea.") || subTitle.Equals("ea"))
                 return true;
             return false;
         }
 
-        private IEnumerable<Subject> GetSubjects()
+        public IEnumerable<Subject> GetSubjects()
         {
             char[] splitters = new char[] { ',' };
             var list = new List<Subject>();
@@ -322,7 +326,7 @@ namespace BookCollection.DAL
             return list;
         }
 
-        private IEnumerable<Author> GetAuthors()
+        public IEnumerable<Author> GetAuthors()
         {
             var list = new List<Author>();
 
@@ -349,7 +353,7 @@ namespace BookCollection.DAL
         }
 
 
-        private void SeedCategories()
+        public List<Category> SeedCategories()
         {
             var list = new List<Category>();
 
@@ -372,14 +376,16 @@ namespace BookCollection.DAL
             list.ForEach(c => c.Title = c.Title.FirstCharacterUppercaseRestLowercase());
             _c.AddRange(list);
             _c.SaveChanges();
+
+            return list;
         }
 
-        private string CleanUpCategory(string orig)
+        public string CleanUpCategory(string orig)
         {
             if (string.IsNullOrWhiteSpace(orig))
                 return "?";
 
-            string temp = orig.Replace("NULL", "?")
+            string temp = orig.ToLowerInvariant().Replace("NULL", "?")
                 .Replace("romannetje", "roman")
                 .Replace("anecdotes", "anekdotes")
                 .Replace("biogr. studies", "biografieën")
@@ -394,7 +400,7 @@ namespace BookCollection.DAL
                 .Replace("studies", "studie")
                 .Replace("toneelstukken", "toneelstuk");
 
-            return Converters.RemoveSerieNr(temp);
+            return temp;
         }
     }
 }

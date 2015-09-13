@@ -347,7 +347,7 @@ namespace BookCollection.DAL
                     {
                         if (!name.Equals("e.a."))
                         {
-                            list.Add(new Author() { OrigKey = field, Lastname = name, Firstname = firstName });
+                            list.Add(new Author() { OrigKey = field, Lastname = name.Replace("e.a.", string.Empty), Firstname = firstName.Replace("e.a.", string.Empty) });
                         }
                     }
                 }
@@ -375,7 +375,7 @@ namespace BookCollection.DAL
                 }
             }
 
-            list.Add(new Category() { Title = "?" });
+            //list.Add(new Category() { Title = "?" });
 
             list.ForEach(c => c.Title = c.Title.FirstCharacterUppercaseRestLowercase());
             _c.Categories.AddRange(list);

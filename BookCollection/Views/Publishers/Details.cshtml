@@ -1,16 +1,15 @@
 ﻿@model BookCollection.Models.Publisher
 
 @{
-    ViewBag.Title = "Details";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Publisher details";
 }
 
 <h2>Publisher</h2>
 
 <div>
     <p>
-        @BC.IconButton("Publisher", "Edit", "pencil", "Edit", new { id = Model.PublisherID })
-        @BC.IconButton("Publisher", "Index", "th-list", "Back to List")
+        @BC.IconButton("Publishers", "Edit", "pencil", "Edit", new { id = Model.PublisherID })
+        @BC.IconButton("Publishers", "Index", "th-list", "Back to List")
     </p>
     <hr />
     <dl class="dl-horizontal">

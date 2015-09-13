@@ -9,8 +9,8 @@
 
 <div>
     <p>
-        @BC.IconButton("Category", "Edit", "pencil", "Edit", new { id = Model.CategoryID })
-        @BC.IconButton("Category", "Index", "th-list", "Back to List")
+        @BC.IconButton("Categories", "Edit", "pencil", "Edit", new { id = Model.CategoryID })
+        @BC.IconButton("Categories", "Index", "th-list", "Back to List")
     </p>
     <hr />
     <dl class="dl-horizontal">
@@ -24,11 +24,6 @@
 
     </dl>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.CategoryID }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
-
 
 @Html.Partial("_RelatedBooks", Model.Books)
 

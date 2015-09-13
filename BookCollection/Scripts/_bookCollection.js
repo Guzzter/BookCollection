@@ -1,1 +1,2 @@
-﻿$('.booktool').tooltip(options);
+﻿alert('tst');
+$('.booktool').tooltip(options);

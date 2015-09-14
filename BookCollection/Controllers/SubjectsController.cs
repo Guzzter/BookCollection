@@ -12,9 +12,8 @@ using PagedList;
 
 namespace BookCollection.Controllers
 {
-    public class SubjectsController : Controller
+    public class SubjectsController : BaseController
     {
-        private BookContext db = new BookContext();
 
         // GET: Subjects
         public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page, bool noPaging = false)

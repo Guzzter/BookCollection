@@ -12,6 +12,11 @@ namespace BookCollection.Helpers
         {
             if (string.IsNullOrEmpty(input))
                 return "";
+
+            if (input.Contains("Byzantium"))
+            {
+                return "Byzantium";
+            }
             string output = input.Trim();
             //Replace trailing / LHR
             output = Regex.Replace(output, @"\s?/\s?(\()?(LHR|lhr)(\))?$", "");

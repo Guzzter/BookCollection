@@ -12,10 +12,8 @@ using PagedList;
 
 namespace BookCollection.Controllers
 {
-    public class AuthorsController : Controller
+    public class AuthorsController : BaseController
     {
-        private BookContext db = new BookContext();
-
         // GET: Authors
         public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page, bool noPaging = false)
         {

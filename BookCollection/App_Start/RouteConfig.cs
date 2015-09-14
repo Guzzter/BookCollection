@@ -18,6 +18,7 @@ namespace BookCollection
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Books", action = "Index", id = UrlParameter.Optional }
             );
+
         }
     }
 }

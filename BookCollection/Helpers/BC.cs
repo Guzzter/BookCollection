@@ -86,6 +86,30 @@ namespace BookCollection.Helpers
             return MvcHtmlString.Create(html);
         }
 
+        /// <summary>
+        /// Helper for determine the correct sizing of a catagory in the tagcloud
+        /// </summary>
+        /// <param name="category"></param>
+        /// <param name="books"></param>
+        /// <returns></returns>
+        public static string GetTagClass(int category, int books)
+        {
+            var result = (category * 100) / books;
+            if (result <= 1)
+                return "tag1";
+            if (result <= 4)
+                return "tag2";
+            if (result <= 8)
+                return "tag3";
+            if (result <= 12)
+                return "tag4";
+            if (result <= 18)
+                return "tag5";
+            if (result <= 30)
+                return "tag6";
+            return result <= 50 ? "tag7" : "";
+        }
+
         /*
         public static MvcHtmlString StateDropDownListFor<TModel, TValue>(this HtmlHelper<TModel> html, Expression<Func<TModel, TValue>> expression)
         {

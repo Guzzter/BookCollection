@@ -11,22 +11,23 @@ namespace BookCollection.Models
     /// </summary>
     public enum Material
     {
-        [Display(Name = "Hard Cover")]
+        [Display(Name = "Hardcover")]
         HardCover,
-        [Display(Name = "Soft Cover")]
+        [Display(Name = "Softcover")]
         SoftCover,
-        [Display(Name = "Deluxe Edition")]
+        [Display(Name = "Deluxe edition")]
         Deluxe,
         [Display(Name = "Summary")]
         Summary,
         [Display(Name = "Pocket")]
         Pocket,
-        [Display(Name = "Separate Box")]
+        [Display(Name = "Separate box")]
         SeparateBox
     }
 
     public enum Condition
     {
+        [Display(Name = "Not specified")]
         NotSpecified,
         New,
         Used,

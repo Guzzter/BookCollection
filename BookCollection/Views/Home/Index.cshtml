@@ -1,6 +1,9 @@
 ﻿@{
     ViewBag.Title = "Home Page";
 }
+@section AddToHead{
+    <link href="@Url.Content("~/Content/TagCloud.css")" rel="stylesheet" type="text/css" />
+}
 
 <div class="jumbotron">
     <h1>ASP.NET</h1>
@@ -10,13 +13,16 @@
 
 <div class="row">
     <div class="col-md-4">
-        <h2>Getting started</h2>
+        <h2>Categories</h2>
         <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
+            @foreach (var t in (IEnumerable<BookCollection.ViewModels.CategoryGroup>)ViewData["TagCloud"]) {
+                
+                @Html.RouteLink(t.CategoryName, "Default",
+                new { controller = "Categories", action = "DetailsForName", name = t.CategoryName},
+                new { @class = BC.GetTagClass(t.BookCount,t.TotalBookCount) })
+                <html>&nbsp;</html>
+            }
         </p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
     </div>
     <div class="col-md-4">
         <h2>Get more libraries</h2>

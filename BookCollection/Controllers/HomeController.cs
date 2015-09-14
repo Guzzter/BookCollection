@@ -8,12 +8,13 @@ using System.Web.Mvc;
 
 namespace BookCollection.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
-        private BookContext db = new BookContext();
-
         public ActionResult Index()
         {
+            // http://www.mikesdotnetting.com/article/107/creating-a-tag-cloud-using-asp-net-mvc-and-the-entity-framework
+            ViewData["TagCloud"] = repo.GetBookCategories();
+
             return View();
         }
 

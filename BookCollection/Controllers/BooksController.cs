@@ -149,6 +149,9 @@ namespace BookCollection.Controllers
         {
             PopulateAuthorDropDownList();
             PopulateCategoryDropDownList();
+            PopulatePublishersDropDownList();
+            PopulateMainSubjectDropDownList();
+            PopulateSubjectDropDownList();
             return View();
         }
 
@@ -157,9 +160,8 @@ namespace BookCollection.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "BookID,Title,AlternativeTitle,AuthorID,CategoryID,InitialPrintedYear,ActualPrintYear,Language,Material,Read,Pages,ISBN,Website,CoverLink")] Book book)
+        public ActionResult Create([Bind(Include = "BookID,Title,AlternativeTitle,AuthorID,CategoryID,InitialPrintedYear,ActualPrintYear,Language,Material,Read,Pages,ISBN,Website,CoverLink,Rating,CodeWithinSerie,Condition,ReviewNote,Location")] Book book)
         {
-            book.CreationDate = DateTime.Now;
             if (ModelState.IsValid)
             {
                 
@@ -169,9 +171,21 @@ namespace BookCollection.Controllers
             }
             PopulateAuthorDropDownList(book.AuthorID);
             PopulateCategoryDropDownList(book.CategoryID);
+            PopulatePublishersDropDownList(book.PublisherID);
+            PopulateMainSubjectDropDownList(book.MainSubjectID);
+
+            if (book.Subjects.Count > 0)
+            {
+                PopulateSubjectDropDownList(book.Subjects.First().SubjectID);
+            }else
+            {
+                PopulateSubjectDropDownList();
+            }
+            
             return View(book);
         }
 
+        #region dropdowns
         private void PopulateAuthorDropDownList(object selected = null)
         {
             var query = _db.Query<Author>().OrderBy(a => a.Lastname);
@@ -182,6 +196,27 @@ namespace BookCollection.Controllers
             var query = _db.Query<Category>().OrderBy(a => a.Title);
             ViewBag.CategoryID = new SelectList(query, "CategoryID", "Title", selected);
         }
+
+        private void PopulatePublishersDropDownList(object selected = null)
+        {
+            var query = _db.Query<Publisher>().OrderBy(a => a.Name);
+            ViewBag.PublisherID = new SelectList(query, "PublisherID", "Name", selected);
+        }
+
+        private void PopulateMainSubjectDropDownList(object selected = null)
+        {
+            var query = _db.Query<Subject>().OrderBy(a => a.Name);
+            ViewBag.MainSubjectID = new SelectList(query, "MainSubjectID", "Name", selected);
+        }
+
+        private void PopulateSubjectDropDownList(object selected = null)
+        {
+            var query = _db.Query<Subject>().OrderBy(a => a.Name);
+            ViewBag.SubjectID = new SelectList(query, "SubjectID", "Name", selected);
+        }
+        #endregion
+
+
         // GET: Books/Edit/5
         public ActionResult Edit(int? id)
         {
@@ -194,6 +229,9 @@ namespace BookCollection.Controllers
             {
                 return HttpNotFound();
             }
+            PopulateAuthorDropDownList(book.AuthorID);
+            PopulateCategoryDropDownList(book.CategoryID);
+            PopulatePublishersDropDownList(book.PublisherID);
             return View(book);
         }
 
@@ -202,7 +240,7 @@ namespace BookCollection.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "BookID,Title,AlternativeTitle,CreationDate,InitialPrintedYear,ActualPrintYear,Language,Material,Read,Pages,ISBN,Website,CoverLink")] Book book)
+        public ActionResult Edit([Bind(Include = "BookID,Title,AlternativeTitle,CreationDate,InitialPrintedYear,ActualPrintYear,Language,Material,Read,Pages,ISBN,Website,CoverLink,Rating,CodeWithinSerie,Condition,ReviewNote,Location")] Book book)
         {
             if (ModelState.IsValid)
             {
@@ -210,6 +248,9 @@ namespace BookCollection.Controllers
                 _db.SaveChanges();
                 return RedirectToAction("Index");
             }
+            PopulateAuthorDropDownList(book.AuthorID);
+            PopulateCategoryDropDownList(book.CategoryID);
+            PopulatePublishersDropDownList(book.PublisherID);
             return View(book);
         }
 

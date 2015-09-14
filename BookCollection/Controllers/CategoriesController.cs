@@ -12,10 +12,8 @@ using PagedList;
 
 namespace BookCollection.Controllers
 {
-    public class CategoriesController : Controller
+    public class CategoriesController : BaseController
     {
-        private BookContext db = new BookContext();
-
         // GET: Categories
         public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page, bool noPaging = false)
         {
@@ -70,6 +68,24 @@ namespace BookCollection.Controllers
                 category.Books = db.Books.Where(b => b.CategoryID == category.CategoryID).ToList();
             }
             return View(category);
+        }
+
+        public ActionResult DetailsForName(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return RedirectToAction("Index");
+            }
+            Category category = db.Categories.FirstOrDefault(b => b.Title == name);
+            if (category == null)
+            {
+                return HttpNotFound();
+            }
+            else
+            {
+                category.Books = db.Books.Where(b => b.CategoryID == category.CategoryID).ToList();
+            }
+            return View("Details", category);
         }
 
         // GET: Categories/Create

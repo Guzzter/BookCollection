@@ -10,5 +10,7 @@ namespace BookCollection.ViewModels
         public string CategoryName { get; set; }
 
         public int BookCount { get; set; }
+
+        public int TotalBookCount { get; set; }
     }
 }

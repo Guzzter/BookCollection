@@ -1,10 +1,12 @@
 ﻿using BookCollection.DAL;
+using BookCollection.Helpers;
 using BookCollection.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 
 namespace BookCollection.Controllers
 {
@@ -13,9 +15,24 @@ namespace BookCollection.Controllers
         public ActionResult Index()
         {
             // http://www.mikesdotnetting.com/article/107/creating-a-tag-cloud-using-asp-net-mvc-and-the-entity-framework
-            ViewData["TagCloud"] = repo.GetBookCategories();
+
+            ViewBag.CatTagCloud = repo.GetBookCategories();
+            ViewBag.SerieTagCloud = repo.GetBookSeries();
+            ViewBag.MostRecent = repo.GetMostRecentBooks(5);
+            // ViewData = ViewData is a dictionary object that you put data into, which then becomes available to the view. ViewData is a derivative of the ViewDataDictionary class, so you can access by the familiar "key/value" syntax.
+            // ViewBag = The ViewBag object is a wrapper around the ViewData object that allows you to create dynamic properties for the ViewBag.
 
             return View();
+        }
+
+        public ActionResult DownloadExcel()
+        {
+            var data = db.Books.ToList();
+            GridView gv = new GridView();
+            gv.DataSource = data;
+            gv.DataBind();
+
+            return new DownloadFileActionResult(gv, "Books.xls");
         }
 
         public ActionResult About()
@@ -58,6 +75,8 @@ namespace BookCollection.Controllers
 
             return View(stats);
         }
+
+        
         
     }
 }

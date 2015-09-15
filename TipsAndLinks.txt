@@ -1,5 +1,7 @@
 http://pluralsight.com/training/Player?author=scott-allen&name=mvc4-building-m9-tests&mode=live&clip=0&course=mvc4-building
 
+Multi select for tags (chosen jquery plugin):
+http://www.asp.net/mvc/overview/older-versions/working-with-the-dropdownlist-box-and-jquery/using-the-dropdownlist-helper-with-aspnet-mvc
 
 http://fluentbootstrap.com/GettingStarted#usage
 @Html.Bootstrap().Alert(AlertState.Warning, "Warning", "Yikes, this is a warning.")

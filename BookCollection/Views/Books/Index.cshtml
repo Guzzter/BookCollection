@@ -11,7 +11,7 @@
     <div class="col-md-6"><h2>@ViewBag.Title</h2></div>
     <div class="col-md-6">
         <div class="pull-right" style="margin:25px 5px 0 0">
-            @BC.IconButton("Create", "plus", "Add new book")
+            @BC.IconButton("Books", "Create", "plus", "Add new book")
         </div>
     </div>
 </div>
@@ -80,14 +80,15 @@
                 @Html.DisplayFor(modelItem => item.Serie)
             </td>
             <td class="text-nowrap">
-                @BC.IconButton("Edit", "pencil", "Edit", item.BookID)
-                @BC.IconButton("Details", "eye-open", "Details", item.BookID)
-                @BC.IconButton("Delete", "remove", "Delete", item.BookID)
+                @BC.IconButton("Books", "Edit", "pencil", "Edit", item.BookID)
+                @BC.IconButton("Books", "Details", "eye-open", "Details", item.BookID)
+                @BC.IconButton("Books", "Delete", "remove", "Delete", item.BookID)
             </td>
         </tr>
     }
 
 </table>
+
 
 Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
 

@@ -212,6 +212,7 @@
     </Compile>
     <Compile Include="Helpers\BC.cs" />
     <Compile Include="Helpers\Converters.cs" />
+    <Compile Include="Helpers\DownloadFileActionResult.cs" />
     <Compile Include="Helpers\Validators.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Logging\TraceLogger.cs" />
@@ -231,7 +232,7 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\PagedList.css" />
-    <Content Include="Content\Tagcloud.css" />
+    <Content Include="Content\HomeIndex.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -491,6 +492,7 @@
     <Content Include="Images\Flags\za.png" />
     <Content Include="Images\Flags\zm.png" />
     <Content Include="Images\Flags\zw.png" />
+    <Content Include="Images\homepage.jpg" />
     <Content Include="Images\Logos\bookcase128.ico" />
     <Content Include="Images\Logos\bookcase128.png" />
     <Content Include="Images\Logos\bookcase16.ico" />

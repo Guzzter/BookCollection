@@ -11,11 +11,13 @@ namespace BookCollection.DAL
 {
     public class CsvSeedDataProvider : ISeedDataProvider
     {
+        private const string resourceName = "BookCollection.DAL.SeedData.basicseeddata.csv";
+
         public IEnumerable<seedDataModel> GetData()
         {
             var dataRows = new List<seedDataModel>();
             Assembly assembly = Assembly.GetExecutingAssembly();
-            string resourceName = "BookCollection.DAL.SeedData.madbooks_seeddata.csv";
+            
             using (Stream stream = assembly.GetManifestResourceStream(resourceName))
             {
                 using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))

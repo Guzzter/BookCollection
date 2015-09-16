@@ -4,7 +4,7 @@
     ViewBag.Title = "Publisher details";
 }
 
-<h2>Publisher</h2>
+<h2>Publisher: @Html.DisplayFor(model => model.Name)</h2>
 
 <div>
     <p>
@@ -12,16 +12,6 @@
         @BC.IconButton("Publishers", "Index", "th-list", "Back to List")
     </p>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-
-    </dl>
 </div>
 
 

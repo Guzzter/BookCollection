@@ -213,6 +213,8 @@
     <Compile Include="Helpers\BC.cs" />
     <Compile Include="Helpers\Converters.cs" />
     <Compile Include="Helpers\DownloadFileActionResult.cs" />
+    <Compile Include="Helpers\ImageResult.cs" />
+    <Compile Include="Helpers\ImageUpload.cs" />
     <Compile Include="Helpers\Validators.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Logging\TraceLogger.cs" />
@@ -559,9 +561,12 @@
     <Content Include="Views\NewBooks\Details.cshtml" />
     <Content Include="Views\NewBooks\Edit.cshtml" />
     <Content Include="Views\NewBooks\Index.cshtml" />
+    <Content Include="Views\Books\UploadCover.cshtml" />
+    <Content Include="Views\Books\UploadCompleted.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Images\Uploaded\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

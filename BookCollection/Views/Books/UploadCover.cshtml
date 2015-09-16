@@ -1,0 +1,29 @@
+﻿@model BookCollection.Models.Book
+
+@{
+    ViewBag.Title = "UploadCover";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<p>
+    @BC.IconButton("Books", "Edit", "pencil", "Edit", new { id = Model.BookID })
+    @BC.IconButton("Books", "Index", "th-list", "Back to List")
+</p>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <h2>Upload book cover for @Model.Title</h2>
+        @if (ViewBag.Error != null)
+        {
+            <h4 style="color:red">@ViewBag.Error</h4>
+        }
+        @using (Html.BeginForm("UploadCover", "Home",
+            FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <div>Upload Image</div>
+            @Html.HiddenFor(Model => Model.BookID)
+            <input type="file" name="avatar" />
+            <input type="submit" value="upload" />
+        }
+    </div>
+</div>

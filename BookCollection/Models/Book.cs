@@ -91,6 +91,8 @@ namespace BookCollection.Models
         public int PublisherID { get; set; }
         public int MainSubjectID { get; set; }
 
+        public string ImageUrl { get; set; }
+
         public virtual ICollection<Author> Authors { get; set; }
         public virtual Publisher Publisher { get; set; }
 

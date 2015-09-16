@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using BookCollection.DAL;
 using BookCollection.Models;
 using PagedList;
+using BookCollection.Helpers;
 
 namespace BookCollection.Controllers
 {
@@ -287,6 +288,76 @@ namespace BookCollection.Controllers
                 _db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        public ActionResult UploadCover(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Book book = _db.Query<Book>().FirstOrDefault(b => b.BookID == id);
+            if (book == null)
+            {
+                return HttpNotFound();
+            }
+            return View(book);
+        }
+
+        public ActionResult UploadCompleted()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult UploadCover(FormCollection formCollection)
+        {
+            int id = Convert.ToInt32(formCollection["ID"]);
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Book book = _db.Query<Book>().FirstOrDefault(b => b.BookID == id);
+            if (book == null)
+            {
+                return HttpNotFound();
+            }
+
+            foreach (string item in Request.Files)
+            {
+                HttpPostedFileBase file = Request.Files[item] as HttpPostedFileBase;
+                if (file.ContentLength == 0)
+                    continue;
+                if (file.ContentLength > 0)
+                {
+                    // width + height will force size, care for distortion
+                    //Exmaple: ImageUpload imageUpload = new ImageUpload { Width = 800, Height = 700 };
+
+                    // height will increase the width proportionally
+                    //Example: ImageUpload imageUpload = new ImageUpload { Height= 600 };
+
+                    // width will increase the height proportionally
+                    ImageUpload imageUpload = new ImageUpload { Width = 300 };
+
+                    // rename, resize, and upload
+                    //return object that contains {bool Success,string ErrorMessage,string ImageName}
+                    ImageResult imageResult = imageUpload.RenameUploadFile(file);
+                    if (imageResult.Success)
+                    {
+                        //TODO: write the filename to the db
+                        
+                        Console.WriteLine(imageResult.ImageName);
+                        return RedirectToAction("UploadCompleted");
+                    }
+                    else
+                    {
+                        // use imageResult.ErrorMessage to show the error
+                        ViewBag.Error = imageResult.ErrorMessage;
+                    }
+                }
+            }
+
+            return View();
         }
     }
 }

@@ -32,6 +32,9 @@
         </th>
         <th>
             @Html.ActionLink("Title", "Index", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })
+            
+            
+                 <span class="glyphicon glyphicon-sort-by-alphabet" aria-hidden="true"></span>
         </th>
         <th>
             @Html.ActionLink("Author", "Index", new { sortOrder = ViewBag.AuthorSortParm, currentFilter = ViewBag.CurrentFilter })

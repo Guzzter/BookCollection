@@ -31,25 +31,22 @@
         <th>
         </th>
         <th>
-            @Html.ActionLink("Title", "Index", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })
-            
-            
-                 <span class="glyphicon glyphicon-sort-by-alphabet" aria-hidden="true"></span>
+            @Html.ActionLink("Title", "Index", new { sortKey = "name", currentFilter = ViewBag.CurrentFilter, currentSort = ViewBag.CurrentSort })
         </th>
         <th>
-            @Html.ActionLink("Author", "Index", new { sortOrder = ViewBag.AuthorSortParm, currentFilter = ViewBag.CurrentFilter })
+            @Html.ActionLink("Author", "Index", new { sortOrder = ViewBag.AuthorSortParm, currentFilter = ViewBag.CurrentFilter, currentSort = ViewBag.CurrentSort })
         </th>
         <th>
-            @Html.ActionLink("Publisher", "Index", new { sortOrder = ViewBag.PublisherSortParm, currentFilter = ViewBag.CurrentFilter })
+            @Html.ActionLink("Publisher", "Index", new { sortOrder = ViewBag.PublisherSortParm, currentFilter = ViewBag.CurrentFilter, currentSort = ViewBag.CurrentSort })
         </th>
         <th>
-            @Html.ActionLink("Year", "Index", new { sortOrder = ViewBag.YearSortParm, currentFilter = ViewBag.CurrentFilter })
+            @Html.ActionLink("Year", "Index", new { sortOrder = ViewBag.YearSortParm, currentFilter = ViewBag.CurrentFilter, currentSort = ViewBag.CurrentSort })
         </th>
         <th>
-            @Html.ActionLink("Category", "Index", new { sortOrder = ViewBag.CategorySortParm, currentFilter = ViewBag.CurrentFilter })
+            @Html.ActionLink("Category", "Index", new { sortOrder = ViewBag.CategorySortParm, currentFilter = ViewBag.CurrentFilter, currentSort = ViewBag.CurrentSort })
         </th>
         <th>
-            @Html.ActionLink("Serie", "Index", new { sortOrder = ViewBag.SerieSortParm, currentFilter = ViewBag.CurrentFilter })
+            @Html.ActionLink("Serie", "Index", new { sortOrder = ViewBag.SerieSortParm, currentFilter = ViewBag.CurrentFilter, currentSort = ViewBag.CurrentSort })
         </th>
         <th></th>
     </tr>

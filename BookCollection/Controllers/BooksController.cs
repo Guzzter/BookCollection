@@ -33,6 +33,26 @@ namespace BookCollection.Controllers
             ViewBag.CategorySortParm = String.IsNullOrEmpty(sortOrder) ? "category_desc" : "category";
             ViewBag.SerieSortParm = String.IsNullOrEmpty(sortOrder) ? "serie_desc" : "serie";
 
+            if (!String.IsNullOrEmpty(sortOrder) && sortOrder.Contains("_"))
+            {
+                string[] sort = sortOrder.ToLowerInvariant().Split(new [] { '_' });
+
+                if (sort[0].Equals("name")) {
+                    ViewBag.NameSortParm = sort[1].Equals("desc") ? "name_desc" : "name_asc";
+                }
+                /*
+                ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "name_asc";
+                ViewBag.AuthorSortParm = String.IsNullOrEmpty(sortOrder) ? "author_desc" : "author";
+                ViewBag.PublisherSortParm = String.IsNullOrEmpty(sortOrder) ? "publisher_desc" : "publisher";
+                ViewBag.YearSortParm = String.IsNullOrEmpty(sortOrder) ? "year_desc" : "year";
+                ViewBag.CategorySortParm = String.IsNullOrEmpty(sortOrder) ? "category_desc" : "category";
+                ViewBag.SerieSortParm = String.IsNullOrEmpty(sortOrder) ? "serie_desc" : "serie";
+                */
+
+            }
+            /*
+            
+            */
 
 
             if (searchString != null)
@@ -67,25 +87,25 @@ namespace BookCollection.Controllers
                 case "name_desc":
                     books = books.OrderByDescending(s => s.Title);
                     break;
-                case "publisher":
+                case "publisher_asc":
                     books = books.OrderBy(s => s.Publisher.Name);
                     break;
                 case "publisher_desc":
                     books = books.OrderByDescending(s => s.Publisher.Name);
                     break;
-                case "category":
+                case "category_asc":
                     books = books.OrderBy(s => s.Category.Title);
                     break;
                 case "category_desc":
                     books = books.OrderByDescending(s => s.Category.Title);
                     break;
-                case "year":
+                case "year_asc":
                     books = books.OrderBy(s => s.ActualPrintYear);
                     break;
                 case "year_desc":
                     books = books.OrderByDescending(s => s.ActualPrintYear);
                     break;
-                case "serie":
+                case "serie_asc":
                     books = books.OrderBy(s => s.Serie);
                     break;
                 case "serie_desc":

@@ -9,6 +9,8 @@ namespace BookCollection.Helpers
 {
     public static class BC
     {
+        private const string spanTemplate = "<span class=\"glyphicon glyphicon-{0}\" aria-hidden=\"true\"></span>";
+
         public static MvcHtmlString BoolIcon(bool target, string toolTipTrue = "", string toolTipFalse = "")
         {
             string spanTemplate = "<span class=\"glyphicon glyphicon-{0}\" aria-hidden=\"true\" {1}></span>";
@@ -42,7 +44,7 @@ namespace BookCollection.Helpers
             //<a href="@Url.Action("Edit", new { id = item.BookID })" class="btn btn-primary btn-xs">
             //<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit</a>
 
-            string spanTemplate = "<span class=\"glyphicon glyphicon-{0}\" aria-hidden=\"true\"></span>";
+            
             string iconHtml = string.IsNullOrEmpty(iconname) ? "" : string.Format(spanTemplate, iconname);
 
             var urlHelper = new UrlHelper(HttpContext.Current.Request.RequestContext);

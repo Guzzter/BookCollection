@@ -1,5 +1,6 @@
 ﻿using BookCollection.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
@@ -12,6 +13,7 @@ namespace BookCollection.DAL
 {
     public interface IBookContext : IDisposable
     {
+
         IQueryable<T> Query<T>() where T : class;
         void Add<T>(T entity) where T : class;
         void Update<T>(T entity) where T : class;
@@ -24,6 +26,8 @@ namespace BookCollection.DAL
 
         DbRawSqlQuery<T> ExecuteSqlQuery<T>(string sqlStatement, params object[] parameters) where T : class;
         void LocalClear<T>() where T : class;
+        T Find<T>(int? id) where T : class;
+        void SetState<T>(T entity, EntityState modified) where T : class;
     }
 
 
@@ -113,6 +117,16 @@ namespace BookCollection.DAL
         DbRawSqlQuery<T> IBookContext.ExecuteSqlQuery<T>(string sqlStatement, params object[] parameters)
         {
             return Database.SqlQuery<T>(sqlStatement, parameters);
+        }
+
+        public T Find<T>(int? id) where T : class
+        {
+            return Set<T>().Find(id);
+        }
+
+        public void SetState<T>(T entity, EntityState modified) where T : class
+        {
+            Entry(entity).State = modified;
         }
     }
 }

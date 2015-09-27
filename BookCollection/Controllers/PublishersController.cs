@@ -14,6 +14,7 @@ namespace BookCollection.Controllers
 {
     public class PublishersController : BaseController
     {
+        public PublishersController(IBookRepository rep, IBookContext bc) : base(rep, bc) { /* constructor forward to BaseController */ }
 
         // GET: Publishers
         public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page, bool noPaging = false)
@@ -32,7 +33,7 @@ namespace BookCollection.Controllers
 
             ViewBag.CurrentFilter = searchString;
 
-            var publishers = from s in db.Publishers
+            var publishers = from s in db.Query<Publisher>()
                            select s;
             if (!string.IsNullOrEmpty(searchString))
             {
@@ -60,14 +61,14 @@ namespace BookCollection.Controllers
             {
                 return RedirectToAction("Index");
             }
-            Publisher publisher = db.Publishers.Find(id);
+            Publisher publisher = db.Find<Publisher>(id);
             if (publisher == null)
             {
                 return HttpNotFound();
             }
             else
             {
-                publisher.Books = db.Books.Where(b => b.PublisherID == publisher.PublisherID).ToList();
+                publisher.Books = db.Query<Book>().Where(b => b.PublisherID == publisher.PublisherID).ToList();
             }
             return View(publisher);
         }
@@ -87,7 +88,7 @@ namespace BookCollection.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Publishers.Add(publisher);
+                db.Add(publisher);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -102,7 +103,7 @@ namespace BookCollection.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Publisher publisher = db.Publishers.Find(id);
+            Publisher publisher = db.Find<Publisher>(id);
             if (publisher == null)
             {
                 return HttpNotFound();
@@ -119,7 +120,8 @@ namespace BookCollection.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(publisher).State = EntityState.Modified;
+                db.SetState(publisher, EntityState.Modified);
+                //db.Entry(publisher).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -133,7 +135,7 @@ namespace BookCollection.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Publisher publisher = db.Publishers.Find(id);
+            Publisher publisher = db.Find<Publisher>(id);
             if (publisher == null)
             {
                 return HttpNotFound();
@@ -146,8 +148,8 @@ namespace BookCollection.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Publisher publisher = db.Publishers.Find(id);
-            db.Publishers.Remove(publisher);
+            Publisher publisher = db.Find<Publisher>(id);
+            db.Remove(publisher);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

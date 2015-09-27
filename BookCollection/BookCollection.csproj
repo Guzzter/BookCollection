@@ -214,7 +214,7 @@
     <Compile Include="Helpers\Converters.cs" />
     <Compile Include="Helpers\CustomHtmlHelper.cs" />
     <Compile Include="Helpers\CustomWebViewPage.cs" />
-    <Compile Include="Helpers\DownloadFileActionResult.cs" />
+    <Compile Include="Helpers\DownloadExcelFileActionResult.cs" />
     <Compile Include="Helpers\ImageResult.cs" />
     <Compile Include="Helpers\ImageUpload.cs" />
     <Compile Include="Helpers\Validators.cs" />

@@ -10,7 +10,7 @@ namespace BookCollection.DAL
 
     public interface IBookRepository
     {
-        void SetContext(BookContext bookContext);
+        void SetContext(IBookContext bookContext);
         IEnumerable<Book> GetMostRecentBooks(int size);
         IEnumerable<CategoryGroup> GetBookCategories();
         IEnumerable<CategoryGroup> GetBookSeries();
@@ -18,22 +18,22 @@ namespace BookCollection.DAL
 
     public class BookRepository : IBookRepository
     {
-        private BookContext db;
-        public void SetContext(BookContext bookContext)
+        private IBookContext db;
+        public void SetContext(IBookContext bookContext)
         {
             db = bookContext;
         }
 
         public IEnumerable<Book> GetMostRecentBooks(int size)
         {
-            return db.Books.OrderByDescending(b => b.CreationDate).Take(size);
+            return db.Query<Book>().OrderByDescending(b => b.CreationDate).Take(size);
         }
 
         public IEnumerable<CategoryGroup> GetBookCategories()
         {
-            var totalBooks = db.Books.Count();
-            var taglist = from books in db.Books
-                group books by books.Category.Title into catGroup
+            var totalBooks = db.Query<Book>().Count();
+            var taglist = from books in db.Query<Book>()
+                          group books by books.Category.Title into catGroup
                 select new CategoryGroup()
                 {
                     CategoryName = catGroup.Key,
@@ -46,8 +46,8 @@ namespace BookCollection.DAL
 
         public IEnumerable<CategoryGroup> GetBookSeries()
         {
-            var totalBooks = db.Books.Count();
-            var taglist = from books in db.Books
+            var totalBooks = db.Query<Book>().Count();
+            var taglist = from books in db.Query<Book>()
                           group books by books.Serie into catGroup
                           select new CategoryGroup()
                           {

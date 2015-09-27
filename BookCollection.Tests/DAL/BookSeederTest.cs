@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using BookCollection.Logging;
 using Moq;
 using BookCollection.Models;
+using BookCollection.DAL.SeedData;
 
 namespace BookCollection.Tests.DAL
 {

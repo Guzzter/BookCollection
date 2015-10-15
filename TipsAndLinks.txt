@@ -11,3 +11,14 @@ Add in Views\web.config:
         <add namespace="FluentBootstrap.Mvc" />
         <add namespace="BookCollection" />
         <add namespace="BookCollection.Helpers" />
+
+
+SQL SERVER CE LOGS (replace Administrator with own user):
+C:\Users\Administrator\AppData\Local\Microsoft\Microsoft SQL Server Local DB\Instances\v11.0
+
+sqllocaldb.exe info -> shows all available instances
+
+Reset instructions:
+Remove C:\Users\Administrator\AppData\Local\Microsoft\Microsoft SQL Server Local DB\Instances\v11.0
+sqllocaldb.exe c v11.0
+sqllocaldb.exe start v11.0

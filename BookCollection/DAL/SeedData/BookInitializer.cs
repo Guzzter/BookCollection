@@ -15,7 +15,7 @@ using BookCollection.Logging;
 namespace BookCollection.DAL
 {
 
-    public class BookInitializer : System.Data.Entity.CreateDatabaseIfNotExists<BookContext>
+    public class BookInitializer : System.Data.Entity.DropCreateDatabaseAlways<BookContext>
     {
         protected override void Seed(BookContext context)
         {

@@ -14,6 +14,8 @@ namespace BookCollection.Controllers
 {
     public class CategoriesController : BaseController
     {
+        public CategoriesController(IBookRepository rep, IBookContext bc) : base(rep, bc) { /* constructor forward to BaseController */ }
+
         // GET: Categories
         public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page, bool noPaging = false)
         {
@@ -31,7 +33,7 @@ namespace BookCollection.Controllers
 
             ViewBag.CurrentFilter = searchString;
 
-            var cats = from s in db.Categories
+            var cats = from s in db.Query<Category>()
                              select s;
             if (!string.IsNullOrEmpty(searchString))
             {
@@ -59,13 +61,13 @@ namespace BookCollection.Controllers
             {
                 return RedirectToAction("Index");
             }
-            Category category = db.Categories.Find(id);
+            Category category = db.Find<Category>(id);
             if (category == null)
             {
                 return HttpNotFound();
             }else
             {
-                category.Books = db.Books.Where(b => b.CategoryID == category.CategoryID).ToList();
+                category.Books = db.Query<Book>().Where(b => b.CategoryID == category.CategoryID).ToList();
             }
             return View(category);
         }
@@ -76,14 +78,14 @@ namespace BookCollection.Controllers
             {
                 return RedirectToAction("Index");
             }
-            Category category = db.Categories.FirstOrDefault(b => b.Title == name);
+            Category category = db.Query<Category>().FirstOrDefault(b => b.Title == name);
             if (category == null)
             {
                 return HttpNotFound();
             }
             else
             {
-                category.Books = db.Books.Where(b => b.CategoryID == category.CategoryID).ToList();
+                category.Books = db.Query<Book>().Where(b => b.CategoryID == category.CategoryID).ToList();
             }
             return View("Details", category);
         }
@@ -103,7 +105,7 @@ namespace BookCollection.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Categories.Add(category);
+                db.Add(category);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -118,7 +120,7 @@ namespace BookCollection.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Category category = db.Categories.Find(id);
+            Category category = db.Find<Category>(id);
             if (category == null)
             {
                 return HttpNotFound();
@@ -135,7 +137,7 @@ namespace BookCollection.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(category).State = EntityState.Modified;
+                db.SetState(category, EntityState.Modified);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -149,7 +151,7 @@ namespace BookCollection.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Category category = db.Categories.Find(id);
+            Category category = db.Find<Category>(id);
             if (category == null)
             {
                 return HttpNotFound();
@@ -162,8 +164,8 @@ namespace BookCollection.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Category category = db.Categories.Find(id);
-            db.Categories.Remove(category);
+            Category category = db.Find<Category>(id);
+            db.Remove(category);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

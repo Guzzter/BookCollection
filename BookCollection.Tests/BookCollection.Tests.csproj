@@ -92,6 +92,7 @@
     <Compile Include="DAL\BookSeederTest.cs" />
     <Compile Include="Helpers\ConvertersTest.cs" />
     <Compile Include="Helpers\ValidatorsTest.cs" />
+    <Compile Include="MockExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controllers\HomeControllerTest.cs" />
   </ItemGroup>

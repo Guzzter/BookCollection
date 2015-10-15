@@ -10,14 +10,14 @@ namespace BookCollection.Controllers
     public abstract class BaseController : Controller
     {
         protected readonly IBookRepository repo;
-        protected readonly BookContext db;
+        protected readonly IBookContext db;
 
-        protected BaseController() : this(new BookRepository(), new BookContext())
+        /*protected BaseController() : this(new BookRepository(), new BookContext())
         {
 
         }
-
-        protected BaseController(IBookRepository rep, BookContext bc)
+        */
+        protected BaseController(IBookRepository rep, IBookContext bc)
         {
             repo = rep;
             repo.SetContext(bc);

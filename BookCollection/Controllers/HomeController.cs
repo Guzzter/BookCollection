@@ -1,5 +1,6 @@
 ﻿using BookCollection.DAL;
 using BookCollection.Helpers;
+using BookCollection.Models;
 using BookCollection.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,8 @@ namespace BookCollection.Controllers
 {
     public class HomeController : BaseController
     {
+        public HomeController(IBookRepository rep, IBookContext bc) : base(rep, bc) { /* constructor forward to BaseController */ }
+
         public ActionResult Index()
         {
             // http://www.mikesdotnetting.com/article/107/creating-a-tag-cloud-using-asp-net-mvc-and-the-entity-framework
@@ -27,24 +30,24 @@ namespace BookCollection.Controllers
 
         public ActionResult DownloadExcel()
         {
-            var data = db.Books.ToList();
+            var data = db.Query<Book>().ToList();
             GridView gv = new GridView();
             gv.DataSource = data;
             gv.DataBind();
 
-            return new DownloadFileActionResult(gv, "Books.xls");
+            return new DownloadExcelFileActionResult(gv, "Books.xls");
         }
 
         public ActionResult About()
         {
             Statistics stats = new Statistics();
-            stats.Books = db.Books.Count();
-            stats.Authors = db.Authors.Count();
-            stats.Subjects = db.Subjects.Count();
-            stats.Publishers = db.Publishers.Count();
+            stats.Books = db.Query<Book>().Count();
+            stats.Authors = db.Query<Author>().Count();
+            stats.Subjects = db.Query<Subject>().Count();
+            stats.Publishers = db.Query<Publisher>().Count();
             
             // Commenting out LINQ to show how to do the same thing in SQL.
-            IQueryable<CategoryGroup> grp = from books in db.Books
+            IQueryable<CategoryGroup> grp = from books in db.Query<Book>()
                                                  group books by books.Category.Title into catGroup
                                                  select new CategoryGroup()
                                                  {
@@ -55,8 +58,8 @@ namespace BookCollection.Controllers
             stats.CategoryGroupStats = grp.OrderByDescending(cg => cg.BookCount).ThenBy(cg => cg.CategoryName).ToList();
             stats.Categories = stats.CategoryGroupStats.Count();
 
-            IQueryable<CategoryGroup> grpLang = from books in db.Books
-                                            group books by books.Language into catGroup
+            IQueryable<CategoryGroup> grpLang = from books in db.Query<Book>()
+                                                group books by books.Language into catGroup
                                             select new CategoryGroup()
                                             {
                                                 CategoryName = catGroup.Key.ToString(),

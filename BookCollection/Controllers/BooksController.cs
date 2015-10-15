@@ -17,6 +17,7 @@ namespace BookCollection.Controllers
     {
         private readonly IBookContext _db;
 
+        //TODO use base controller
         public BooksController(IBookContext dbContext)
         {
             _db = dbContext;

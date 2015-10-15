@@ -12,7 +12,7 @@ using System.Data.Entity.Validation;
 using BookCollection.Helpers;
 using BookCollection.Logging;
 
-namespace BookCollection.DAL
+namespace BookCollection.DAL.SeedData
 {
 
     public class BookInitializer : System.Data.Entity.DropCreateDatabaseAlways<BookContext>

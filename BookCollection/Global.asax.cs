@@ -1,4 +1,5 @@
 ﻿using BookCollection.DAL;
+using BookCollection.Logging;
 using Microsoft.Practices.Unity;
 using Microsoft.Practices.Unity.Mvc;
 using System;
@@ -49,7 +50,8 @@ namespace BookCollection
         {
             var container = new UnityContainer();
             container.RegisterType<IBookContext, BookContext>();
-            //container.RegisterType<ILogger, FakeLogger>();
+            container.RegisterType<IBookRepository, BookRepository>();
+            container.RegisterType<ILogger, TraceLogger>();
             MvcUnityContainer.Container = container;
             return container;
         }

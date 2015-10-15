@@ -14,6 +14,7 @@ namespace BookCollection.Controllers
 {
     public class SubjectsController : BaseController
     {
+        public SubjectsController(IBookRepository rep, IBookContext bc) : base(rep, bc) { /* constructor forward to BaseController */ }
 
         // GET: Subjects
         public ActionResult Index(string sortOrder, string currentFilter, string searchString, int? page, bool noPaging = false)
@@ -32,7 +33,7 @@ namespace BookCollection.Controllers
 
             ViewBag.CurrentFilter = searchString;
 
-            var subjects = from s in db.Subjects
+            var subjects = from s in db.Query<Subject>()
                           select s;
             if (!string.IsNullOrEmpty(searchString))
             {
@@ -60,13 +61,13 @@ namespace BookCollection.Controllers
             {
                 return RedirectToAction("Index");
             }
-            Subject subject = db.Subjects.Find(id);
+            Subject subject = db.Find<Subject>(id);
             if (subject == null)
             {
                 return HttpNotFound();
             }else
             {
-                subject.Books = db.Books.Where(b => b.MainSubjectID == subject.SubjectID).ToList();
+                subject.Books = db.Query<Book>().Where(b => b.MainSubjectID == subject.SubjectID).ToList();
             }
             return View(subject);
         }
@@ -86,7 +87,7 @@ namespace BookCollection.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Subjects.Add(subject);
+                db.Add(subject);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -101,7 +102,7 @@ namespace BookCollection.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Subject subject = db.Subjects.Find(id);
+            Subject subject = db.Find<Subject>(id);
             if (subject == null)
             {
                 return HttpNotFound();
@@ -118,7 +119,7 @@ namespace BookCollection.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(subject).State = EntityState.Modified;
+                db.SetState(subject, EntityState.Modified);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -132,7 +133,7 @@ namespace BookCollection.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Subject subject = db.Subjects.Find(id);
+            Subject subject = db.Find<Subject>(id);
             if (subject == null)
             {
                 return HttpNotFound();
@@ -145,8 +146,8 @@ namespace BookCollection.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Subject subject = db.Subjects.Find(id);
-            db.Subjects.Remove(subject);
+            Subject subject = db.Find<Subject>(id);
+            db.Remove(subject);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

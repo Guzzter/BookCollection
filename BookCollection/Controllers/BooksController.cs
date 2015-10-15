@@ -27,19 +27,25 @@ namespace BookCollection.Controllers
         public ActionResult Index(string sortOrder, string currentFilter, string bookCategory, string serie, string searchString, int? page, bool noPaging = false)
         {
             ViewBag.CurrentSort = sortOrder;
+            /*
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "name";
             ViewBag.AuthorSortParm = String.IsNullOrEmpty(sortOrder) ? "author_desc" : "author";
             ViewBag.PublisherSortParm = String.IsNullOrEmpty(sortOrder) ? "publisher_desc" : "publisher";
             ViewBag.YearSortParm = String.IsNullOrEmpty(sortOrder) ? "year_desc" : "year";
             ViewBag.CategorySortParm = String.IsNullOrEmpty(sortOrder) ? "category_desc" : "category";
             ViewBag.SerieSortParm = String.IsNullOrEmpty(sortOrder) ? "serie_desc" : "serie";
-
+            */
             if (!String.IsNullOrEmpty(sortOrder) && sortOrder.Contains("_"))
             {
                 string[] sort = sortOrder.ToLowerInvariant().Split(new [] { '_' });
 
-                if (sort[0].Equals("name")) {
+                if (sort[0].Equals("name"))
+                {
                     ViewBag.NameSortParm = sort[1].Equals("desc") ? "name_desc" : "name_asc";
+                }
+                else if (sort[0].Equals("author"))
+                {
+                    ViewBag.AuthorSortParm = sort[1].Equals("desc") ? "author_desc" : "author_asc";
                 }
                 /*
                 ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "name_asc";
@@ -51,10 +57,11 @@ namespace BookCollection.Controllers
                 */
 
             }
-            /*
-            
-            */
-
+            else
+            {
+                // default sort on name
+                sortOrder = "name_asc";
+            }
 
             if (searchString != null)
             {
@@ -94,6 +101,12 @@ namespace BookCollection.Controllers
                 case "publisher_desc":
                     books = books.OrderByDescending(s => s.Publisher.Name);
                     break;
+                case "author_asc":
+                    books = books.OrderBy(s => s.MainAuthor);
+                    break;
+                case "author_desc":
+                    books = books.OrderByDescending(s => s.MainAuthor);
+                    break;
                 case "category_asc":
                     books = books.OrderBy(s => s.Category.Title);
                     break;
@@ -112,12 +125,12 @@ namespace BookCollection.Controllers
                 case "serie_desc":
                     books = books.OrderByDescending(s => s.Serie);
                     break;
-                default:  // Name ascending 
+                default:  // Default Name ascending 
                     books = books.OrderBy(s => s.Title);
                     break;
             }
 
-            //eager load authors, categories and publishers
+            // Eager load authors, categories and publishers
             books.Include(a => a.Authors);
             books.Include(a => a.Category);
             books.Include(a => a.Publisher);
@@ -327,14 +340,15 @@ namespace BookCollection.Controllers
 
         public ActionResult UploadCompleted()
         {
-            return View();
+            Book book = TempData["book"] as Book;
+            return View(book);
         }
 
         [HttpPost]
-        public ActionResult UploadCover(FormCollection formCollection)
+        public ActionResult UploadCover(FormCollection formCollection, HttpPostedFileBase imagefile)
         {
-            int id = Convert.ToInt32(formCollection["ID"]);
-            if (id == null)
+            int id = Convert.ToInt32(formCollection["BookID"]);
+            if (id == -1)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
@@ -344,39 +358,37 @@ namespace BookCollection.Controllers
                 return HttpNotFound();
             }
 
-            foreach (string item in Request.Files)
+            if (imagefile.ContentLength > 0)
             {
-                HttpPostedFileBase file = Request.Files[item] as HttpPostedFileBase;
-                if (file.ContentLength == 0)
-                    continue;
-                if (file.ContentLength > 0)
+                // width + height will force size, care for distortion
+                //Exmaple: ImageUpload imageUpload = new ImageUpload { Width = 800, Height = 700 };
+
+                // height will increase the width proportionally
+                //Example: ImageUpload imageUpload = new ImageUpload { Height= 600 };
+
+                // width will increase the height proportionally
+                ImageUpload imageUpload = new ImageUpload { Width = 300 };
+
+                // rename, resize, and upload
+                //return object that contains {bool Success,string ErrorMessage,string ImageName}
+                ImageResult imageResult = imageUpload.RenameUploadFile(imagefile);
+                if (imageResult.Success)
                 {
-                    // width + height will force size, care for distortion
-                    //Exmaple: ImageUpload imageUpload = new ImageUpload { Width = 800, Height = 700 };
+                    book.ImageUrl = imageResult.ImageName;
+                    _db.Update(book);
+                    _db.SaveChanges();
 
-                    // height will increase the width proportionally
-                    //Example: ImageUpload imageUpload = new ImageUpload { Height= 600 };
+                    TempData["book"] = book;
 
-                    // width will increase the height proportionally
-                    ImageUpload imageUpload = new ImageUpload { Width = 300 };
-
-                    // rename, resize, and upload
-                    //return object that contains {bool Success,string ErrorMessage,string ImageName}
-                    ImageResult imageResult = imageUpload.RenameUploadFile(file);
-                    if (imageResult.Success)
-                    {
-                        //TODO: write the filename to the db
-                        
-                        Console.WriteLine(imageResult.ImageName);
-                        return RedirectToAction("UploadCompleted");
-                    }
-                    else
-                    {
-                        // use imageResult.ErrorMessage to show the error
-                        ViewBag.Error = imageResult.ErrorMessage;
-                    }
+                    return RedirectToAction("UploadCompleted");
+                }
+                else
+                {
+                    // use imageResult.ErrorMessage to show the error
+                    ViewBag.Error = imageResult.ErrorMessage;
                 }
             }
+
 
             return View();
         }

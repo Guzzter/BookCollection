@@ -31,22 +31,23 @@
         <th>
         </th>
         <th>
+            <!-- Actio Link is overriden to add sort icons when sortKey is available in route -->
             @Html.ActionLink("Title", "Index", new { sortKey = "name", currentFilter = ViewBag.CurrentFilter, currentSort = ViewBag.CurrentSort })
         </th>
         <th>
-            @Html.ActionLink("Author", "Index", new { sortOrder = ViewBag.AuthorSortParm, currentFilter = ViewBag.CurrentFilter, currentSort = ViewBag.CurrentSort })
+            @Html.ActionLink("Author", "Index", new { sortKey = "author", currentFilter = ViewBag.CurrentFilter, currentSort = ViewBag.CurrentSort })
         </th>
         <th>
-            @Html.ActionLink("Publisher", "Index", new { sortOrder = ViewBag.PublisherSortParm, currentFilter = ViewBag.CurrentFilter, currentSort = ViewBag.CurrentSort })
+            @Html.ActionLink("Publisher", "Index", new { sortKey = "publisher", sortOrder = ViewBag.PublisherSortParm, currentFilter = ViewBag.CurrentFilter, currentSort = ViewBag.CurrentSort })
         </th>
         <th>
-            @Html.ActionLink("Year", "Index", new { sortOrder = ViewBag.YearSortParm, currentFilter = ViewBag.CurrentFilter, currentSort = ViewBag.CurrentSort })
+            @Html.ActionLink("Year", "Index", new { sortKey = "year", sortOrder = ViewBag.YearSortParm, currentFilter = ViewBag.CurrentFilter, currentSort = ViewBag.CurrentSort })
         </th>
         <th>
-            @Html.ActionLink("Category", "Index", new { sortOrder = ViewBag.CategorySortParm, currentFilter = ViewBag.CurrentFilter, currentSort = ViewBag.CurrentSort })
+            @Html.ActionLink("Category", "Index", new { sortKey = "category", sortOrder = ViewBag.CategorySortParm, currentFilter = ViewBag.CurrentFilter, currentSort = ViewBag.CurrentSort })
         </th>
         <th>
-            @Html.ActionLink("Serie", "Index", new { sortOrder = ViewBag.SerieSortParm, currentFilter = ViewBag.CurrentFilter, currentSort = ViewBag.CurrentSort })
+            @Html.ActionLink("Serie", "Index", new { sortKey = "serie", sortOrder = ViewBag.SerieSortParm, currentFilter = ViewBag.CurrentFilter, currentSort = ViewBag.CurrentSort })
         </th>
         <th></th>
     </tr>

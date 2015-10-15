@@ -11,9 +11,14 @@
     <p>
         @BC.IconButton("Books", "Edit", "pencil", "Edit", new { id = Model.BookID })
         @BC.IconButton("Books", "UploadCover", "picture", "Upload book cover", new { id = Model.BookID })
-        @BC.IconButton("Books", "Index", "th-list", "Back to List")
+        @BC.IconButton("Books", "Index", "th-list", "Back to list")
     </p>
     <hr />
+    @if (Model.ImageUrl != null)
+    {
+        <img src="~/Images/Uploaded/@Url.Content(Model.ImageUrl)" alt="Image" />
+    }
+
     <dl class="dl-horizontal">
 
         <dt>

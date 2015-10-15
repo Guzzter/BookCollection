@@ -1,11 +1,20 @@
-﻿
+﻿@model BookCollection.Models.Book
+
 @{
-    ViewBag.Title = "UploadCompleted";
+    ViewBag.Title = "Upload completed";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>UploadCompleted</h2>
+<h2>Upload completed</h2>
+
+<p>Cover is uploaded.</p>
+
+@if (Model.ImageUrl != null)
+{
+    <p><img src="~/Images/Uploaded/@Url.Content(Model.ImageUrl)" alt="Cover Image" /></p>
+}
 
 <p>
+    @BC.IconButton("Books", "Details", "eye-open", "Back to details", new { id = Model.BookID })
     @BC.IconButton("Books", "Index", "th-list", "Back to List")
 </p>

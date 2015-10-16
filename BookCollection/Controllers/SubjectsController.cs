@@ -67,7 +67,7 @@ namespace BookCollection.Controllers
                 return HttpNotFound();
             }else
             {
-                subject.Books = db.Query<Book>().Where(b => b.MainSubjectID == subject.SubjectID).ToList();
+                subject.Books = db.Query<Book>().Where(b => b.Subjects.Any(s => s.SubjectID == subject.SubjectID)).ToList();
             }
             return View(subject);
         }

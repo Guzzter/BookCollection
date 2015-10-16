@@ -215,6 +215,7 @@
     <Compile Include="Helpers\CustomHtmlHelper.cs" />
     <Compile Include="Helpers\CustomWebViewPage.cs" />
     <Compile Include="Helpers\DownloadExcelFileActionResult.cs" />
+    <Compile Include="Helpers\HtmlGrid.cs" />
     <Compile Include="Helpers\ImageResult.cs" />
     <Compile Include="Helpers\ImageUpload.cs" />
     <Compile Include="Helpers\Validators.cs" />
@@ -227,6 +228,7 @@
     <Compile Include="Models\Publisher.cs" />
     <Compile Include="Models\Subject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\BookViewModel.cs" />
     <Compile Include="ViewModels\CategoryGroup.cs" />
     <Compile Include="ViewModels\Statistics.cs" />
   </ItemGroup>

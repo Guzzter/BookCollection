@@ -31,7 +31,7 @@
         <th>
         </th>
         <th>
-            <!-- Actio Link is overriden to add sort icons when sortKey is available in route -->
+            <!-- Action Link is overriden to add sort icons when sortKey is available in route -->
             @Html.ActionLink("Title", "Index", new { sortKey = "name", currentFilter = ViewBag.CurrentFilter, currentSort = ViewBag.CurrentSort })
         </th>
         <th>
@@ -66,7 +66,7 @@
                 @Html.DisplayFor(modelItem => item.Title)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.MainAuthor)
+                @Html.Grid("Table", item.Authors, new[] { "Fullname" })
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Publisher.Name)

@@ -156,22 +156,23 @@ namespace BookCollection.DAL.SeedData
                     {
                         pub = pubs.FirstOrDefault(a => a.Name.Equals("?", StringComparison.OrdinalIgnoreCase));
                     }
-                    Subject mainSub = null;
-                    List<Subject> otherSub = new List<Subject>();
+                    //Subject mainSub = null;
+                    List<Subject> subjects = new List<Subject>();
+                    
                     if (!string.IsNullOrWhiteSpace(item.Subjects1))
                     {
                         var splt = item.Subjects1.Split(splitters, StringSplitOptions.RemoveEmptyEntries);
-                        mainSub = subs.FirstOrDefault(s => s.Name.Equals(splt[0], StringComparison.OrdinalIgnoreCase));
+                        //mainSub = subs.FirstOrDefault(s => s.Name.Equals(splt[0], StringComparison.OrdinalIgnoreCase));
                         
-                        if (splt.Length > 1)
+                        if (splt.Length > 0)
                         {
-                            for (int i=1; i < splt.Length; i++)
+                            for (int i=0; i < splt.Length; i++)
                             {
                                 string subTitle = splt[i].Trim();
                                 if (!IsBlacklistedSubject(subTitle)) {
                                     var dbSup = subs.FirstOrDefault(s => s.Name.Equals(subTitle, StringComparison.OrdinalIgnoreCase));
-                                    if (dbSup != null && !otherSub.Contains(dbSup)) {
-                                        otherSub.Add(dbSup);
+                                    if (dbSup != null && !subjects.Contains(dbSup)) {
+                                        subjects.Add(dbSup);
                                     }
                                 }
                             }
@@ -192,8 +193,7 @@ namespace BookCollection.DAL.SeedData
                             Serie = Converters.RemoveSerieNr(item.Serie),
                             CreationDate = nullDate,
                             Publisher = pub,
-                            MainSubject = mainSub,
-                            Subjects = otherSub,
+                            Subjects = subjects,
                             Code = item.Contents,
                             Condition = Condition.Used,
                             CodeWithinSerie = Converters.ExtractSerieNr(item.Serie),

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BookCollection.Helpers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -22,6 +23,7 @@ namespace BookCollection.Models
         public string Title { get; set; }
 
         #region Unmapped helper field
+        /*
         [NotMapped]
         public string MainAuthor
         {
@@ -41,6 +43,7 @@ namespace BookCollection.Models
                 return main == null ? 0 : main.AuthorID;
             }
         }
+        */
         #endregion
 
         [Display(Name = "Alternative Title")]
@@ -76,7 +79,9 @@ namespace BookCollection.Models
         public string Code { get; set; }
         public string SortField { get; set; }
         public bool Read { get; set; }
-        public int Pages { get; set; }
+        public int? Pages { get; set; }
+
+        [RegularExpression(Validators.ISBNREGEX, ErrorMessage = "ISBN is not valid, example: '1-901259-09-9'")]
         public string ISBN { get; set; }
 
         [DataType(DataType.Url)]
@@ -85,25 +90,14 @@ namespace BookCollection.Models
         public string CoverLink { get; set; }
 
         public string ReviewNote { get; set; }
-
-        public int AuthorID { get; set; }
         public int CategoryID { get; set; }
         public int PublisherID { get; set; }
-        public int MainSubjectID { get; set; }
-
         public string ImageUrl { get; set; }
 
         public virtual ICollection<Author> Authors { get; set; }
         public virtual Publisher Publisher { get; set; }
 
         public virtual Category Category { get; set; }
-
-        public virtual Subject MainSubject { get; set; }
         public virtual ICollection<Subject> Subjects { get; set; }
-
-
-
-
-
     }
 }

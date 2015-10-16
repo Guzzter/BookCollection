@@ -68,7 +68,8 @@ namespace BookCollection.Controllers
             }
             else
             {
-                author.Books = db.Query<Book>().Where(b => b.AuthorID == author.AuthorID).ToList();
+                
+                author.Books = db.Query<Book>().Where(b => b.Authors.Any(a => a.AuthorID == author.AuthorID)).ToList();
             }
             return View(author);
         }

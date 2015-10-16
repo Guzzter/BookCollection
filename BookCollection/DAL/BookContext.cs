@@ -51,15 +51,15 @@ namespace BookCollection.DAL
             //Many to Many relationships: intermediate table BookAuthors
             modelBuilder.Entity<Book>()
                 .HasMany(b => b.Authors).WithMany(a => a.Books)
-                .Map(t => t.MapLeftKey("BookID")
-                    .MapRightKey("AuthorID")
+                .Map(t => t.MapLeftKey("BookRefID")
+                    .MapRightKey("AuthorRefID")
                     .ToTable("BookAuthors"));
 
             //Many to Many relationships: intermediate table BookSubjects
             modelBuilder.Entity<Book>()
                 .HasMany(b => b.Subjects).WithMany(s => s.Books)
-                .Map(t => t.MapLeftKey("BookID")
-                    .MapRightKey("SubjectID")
+                .Map(t => t.MapLeftKey("BookRefID")
+                    .MapRightKey("SubjectRefID")
                     .ToTable("BookSubjects"));
 
         }

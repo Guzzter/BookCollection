@@ -10,6 +10,7 @@ using BookCollection.DAL;
 using BookCollection.Models;
 using PagedList;
 using BookCollection.Helpers;
+using BookCollection.ViewModels;
 
 namespace BookCollection.Controllers
 {
@@ -17,7 +18,6 @@ namespace BookCollection.Controllers
     {
         private readonly IBookContext _db;
 
-        //TODO use base controller
         public BooksController(IBookContext dbContext)
         {
             _db = dbContext;
@@ -34,7 +34,7 @@ namespace BookCollection.Controllers
             ViewBag.YearSortParm = String.IsNullOrEmpty(sortOrder) ? "year_desc" : "year";
             ViewBag.CategorySortParm = String.IsNullOrEmpty(sortOrder) ? "category_desc" : "category";
             ViewBag.SerieSortParm = String.IsNullOrEmpty(sortOrder) ? "serie_desc" : "serie";
-            */
+            
             if (!String.IsNullOrEmpty(sortOrder) && sortOrder.Contains("_"))
             {
                 string[] sort = sortOrder.ToLowerInvariant().Split(new [] { '_' });
@@ -47,21 +47,13 @@ namespace BookCollection.Controllers
                 {
                     ViewBag.AuthorSortParm = sort[1].Equals("desc") ? "author_desc" : "author_asc";
                 }
-                /*
-                ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "name_asc";
-                ViewBag.AuthorSortParm = String.IsNullOrEmpty(sortOrder) ? "author_desc" : "author";
-                ViewBag.PublisherSortParm = String.IsNullOrEmpty(sortOrder) ? "publisher_desc" : "publisher";
-                ViewBag.YearSortParm = String.IsNullOrEmpty(sortOrder) ? "year_desc" : "year";
-                ViewBag.CategorySortParm = String.IsNullOrEmpty(sortOrder) ? "category_desc" : "category";
-                ViewBag.SerieSortParm = String.IsNullOrEmpty(sortOrder) ? "serie_desc" : "serie";
-                */
-
             }
             else
             {
                 // default sort on name
                 sortOrder = "name_asc";
             }
+            */
 
             if (searchString != null)
             {
@@ -101,12 +93,12 @@ namespace BookCollection.Controllers
                 case "publisher_desc":
                     books = books.OrderByDescending(s => s.Publisher.Name);
                     break;
-                case "author_asc":
+                /*case "author_asc":
                     books = books.OrderBy(s => s.MainAuthor);
                     break;
                 case "author_desc":
                     books = books.OrderByDescending(s => s.MainAuthor);
-                    break;
+                    break;*/
                 case "category_asc":
                     books = books.OrderBy(s => s.Category.Title);
                     break;
@@ -182,12 +174,14 @@ namespace BookCollection.Controllers
         // GET: Books/Create
         public ActionResult Create()
         {
-            PopulateAuthorDropDownList();
+            // One to many relationships
             PopulateCategoryDropDownList();
             PopulatePublishersDropDownList();
-            PopulateMainSubjectDropDownList();
-            PopulateSubjectDropDownList();
-            return View();
+
+            // Create model with defaults
+            var bookViewModel = new Book();
+            
+            return View(bookViewModel);
         }
 
         // POST: Books/Create
@@ -195,7 +189,7 @@ namespace BookCollection.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "BookID,Title,AlternativeTitle,AuthorID,CategoryID,InitialPrintedYear,ActualPrintYear,Language,Material,Read,Pages,ISBN,Website,CoverLink,Rating,CodeWithinSerie,Condition,ReviewNote,Location")] Book book)
+        public ActionResult Create([Bind(Include = "BookID,Title,AlternativeTitle,AuthorID,CategoryID,PublisherID,InitialPrintedYear,ActualPrintYear,Language,Material,Read,Pages,ISBN,Website,CoverLink,Rating,CodeWithinSerie,Condition,ReviewNote,Location")] Book book)
         {
             if (ModelState.IsValid)
             {
@@ -204,28 +198,15 @@ namespace BookCollection.Controllers
                 _db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            PopulateAuthorDropDownList(book.AuthorID);
+
             PopulateCategoryDropDownList(book.CategoryID);
             PopulatePublishersDropDownList(book.PublisherID);
-            PopulateMainSubjectDropDownList(book.MainSubjectID);
 
-            if (book.Subjects.Count > 0)
-            {
-                PopulateSubjectDropDownList(book.Subjects.First().SubjectID);
-            }else
-            {
-                PopulateSubjectDropDownList();
-            }
             
             return View(book);
         }
 
         #region dropdowns
-        private void PopulateAuthorDropDownList(object selected = null)
-        {
-            var query = _db.Query<Author>().OrderBy(a => a.Lastname);
-            ViewBag.AuthorID = new SelectList(query, "AuthorID", "Fullname", selected);
-        }
         private void PopulateCategoryDropDownList(object selected = null)
         {
             var query = _db.Query<Category>().OrderBy(a => a.Title);
@@ -237,18 +218,6 @@ namespace BookCollection.Controllers
             var query = _db.Query<Publisher>().OrderBy(a => a.Name);
             ViewBag.PublisherID = new SelectList(query, "PublisherID", "Name", selected);
         }
-
-        private void PopulateMainSubjectDropDownList(object selected = null)
-        {
-            var query = _db.Query<Subject>().OrderBy(a => a.Name);
-            ViewBag.MainSubjectID = new SelectList(query, "MainSubjectID", "Name", selected);
-        }
-
-        private void PopulateSubjectDropDownList(object selected = null)
-        {
-            var query = _db.Query<Subject>().OrderBy(a => a.Name);
-            ViewBag.SubjectID = new SelectList(query, "SubjectID", "Name", selected);
-        }
         #endregion
 
 
@@ -259,15 +228,43 @@ namespace BookCollection.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Book book = _db.Query<Book>().FirstOrDefault(b => b.BookID == id);
+            Book book = _db.Query<Book>()
+                .Include(i => i.Authors)
+                .Include(i => i.Subjects)
+                .First(b => b.BookID == id);
+
             if (book == null)
             {
                 return HttpNotFound();
             }
-            PopulateAuthorDropDownList(book.AuthorID);
+
             PopulateCategoryDropDownList(book.CategoryID);
             PopulatePublishersDropDownList(book.PublisherID);
-            return View(book);
+
+            var allAuthors = _db.Query<Author>().Select(o => new SelectListItem
+            {
+                Text = o.Lastname,
+                Value = o.AuthorID.ToString()
+            });
+
+            var allSubjects = _db.Query<Subject>().Select(o => new SelectListItem
+            {
+                Text = o.Name,
+                Value = o.SubjectID.ToString()
+            });
+
+
+            var bookViewModel = new BookViewModel()
+            {
+                Book = book,
+                AllAuthors = allAuthors,
+                AllSubjects = allSubjects
+            };
+
+            var tets = bookViewModel.SelectedSubjects;
+            var tets2 = bookViewModel.SelectedAuthors;
+
+            return View(bookViewModel);
         }
 
         // POST: Books/Edit/5
@@ -275,18 +272,64 @@ namespace BookCollection.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "BookID,Title,AlternativeTitle,CreationDate,InitialPrintedYear,ActualPrintYear,Language,Material,Read,Pages,ISBN,Website,CoverLink,Rating,CodeWithinSerie,Condition,ReviewNote,Location")] Book book)
+        //public ActionResult Edit([Bind(Include = "BookID,AuthorID,MainAuthorID,MainSubjectID,SubjectID,Title,AlternativeTitle,PublisherID,CreationDate,InitialPrintedYear,ActualPrintYear,CategoryID,Language,Material,Read,Pages,ISBN,Website,CoverLink,Rating,CodeWithinSerie,Condition,ReviewNote,Location,Serie")] Book book)
+        public ActionResult Edit(BookViewModel bookViewModel)
         {
+            
+
             if (ModelState.IsValid)
             {
-                _db.Update(book);
-                _db.SaveChanges();
+
+                var bookToUpdate = _db.Query<Book>()
+                    .Include(i => i.Authors)
+                    .Include(i => i.Subjects).First(i => i.BookID == bookViewModel.Book.BookID);
+
+                if (TryUpdateModel(bookToUpdate, "Book"))
+                {
+                    // Update references to author (Add new/Remove old)
+                    var newAuthors = _db.Query<Author>().Where(
+                        m => bookViewModel.SelectedAuthors.Contains(m.AuthorID)).ToList();
+                    var updatedAuthors = new HashSet<int>(bookViewModel.SelectedAuthors);
+                    foreach (Author author in _db.Query<Author>())
+                    {
+                        if (!updatedAuthors.Contains(author.AuthorID))
+                        {
+                            bookToUpdate.Authors.Remove(author);
+                        }
+                        else
+                        {
+                            bookToUpdate.Authors.Add(author);
+                        }
+                    }
+
+                    // Update references to subjects (Add new/Remove old)
+                    var newSubjects = _db.Query<Subject>().Where(
+                        s => bookViewModel.SelectedSubjects.Contains(s.SubjectID)).ToList();
+                    var updatedSubjects = new HashSet<int>(bookViewModel.SelectedSubjects);
+
+                    foreach (Subject sub in _db.Query<Subject>())
+                    {
+                        if (!updatedSubjects.Contains(sub.SubjectID))
+                        {
+                            bookToUpdate.Subjects.Remove(sub);
+                        }
+                        else
+                        {
+                            bookToUpdate.Subjects.Add(sub);
+                        }
+                    }
+
+                    _db.SetState(bookToUpdate, EntityState.Modified);
+                    _db.SaveChanges();
+                }
+
                 return RedirectToAction("Index");
             }
-            PopulateAuthorDropDownList(book.AuthorID);
-            PopulateCategoryDropDownList(book.CategoryID);
-            PopulatePublishersDropDownList(book.PublisherID);
-            return View(book);
+
+            PopulateCategoryDropDownList(bookViewModel.Book.CategoryID);
+            PopulatePublishersDropDownList(bookViewModel.Book.PublisherID);
+
+            return View(bookViewModel);
         }
 
         // GET: Books/Delete/5

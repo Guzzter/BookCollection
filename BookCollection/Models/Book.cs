@@ -29,7 +29,7 @@ namespace BookCollection.Models
         {
             get
             {
-                Author main = Authors == null ? null : Authors.FirstOrDefault();    
+                Author main = Authors == null ? null : Authors.FirstOrDefault();
                 return main == null ? string.Empty : main.Fullname;
             }
         }
@@ -52,6 +52,7 @@ namespace BookCollection.Models
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         [Display(Name = "Create Date")]
+        [UIHint("DatePicker")]
         public DateTime? CreationDate { get; set; }
 
         [Display(Name = "Init Print Year")]

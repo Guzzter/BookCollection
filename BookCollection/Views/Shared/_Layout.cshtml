@@ -52,7 +52,14 @@
 
     <script type="text/javascript">
         $(function () {
-            $('[data-toggle="tooltip"]').tooltip()
+            $('[data-toggle="tooltip"]').tooltip();
+            $(':input[data-datepicker=true]').datepicker();
+            /*{
+                showOn: "button",
+                buttonImage: "/images/calendar.gif",
+                buttonImageOnly: true,
+                buttonText: "Select date"
+            });*/
         })
     </script>
 </body>

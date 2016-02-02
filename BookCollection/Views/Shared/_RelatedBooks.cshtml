@@ -18,10 +18,7 @@
         <th style="width:50%">
             Title
         </th>
-        <th style="width:30%">
-            Author
-        </th>
-        <th style="width:20%">
+        <th style="width:50%">
             Publisher
         </th>
     </tr>
@@ -33,16 +30,6 @@
         <tr>
             <td>
                 @Html.ActionLink(item.Title, "Details", "Books", new { id = item.BookID }, null)
-            </td>
-            <td>
-                @if (item.MainAuthor == "")
-                {
-                    <text>-</text>
-                }
-                else
-                {
-                    @Html.ActionLink(item.MainAuthor, "Details", "Authors", new { id = item.MainAuthorID }, null)
-                }
             </td>
             <td>
                 @Html.ActionLink(item.Publisher.Name, "Details", "Publishers", new { id = item.PublisherID }, null)

@@ -1,0 +1,25 @@
+﻿@{
+    var attributes = new Dictionary<string, object>();
+
+    attributes.Add("type", "datetime");
+
+    attributes.Add("class", "text-box single-line");
+
+    // add datapicker, don't forget the jQuery UI javascript and CSS that is needed
+    // add attribute to model property [UIHint("DatePicker")] or use Html.EditorFor(m => m.property, "DatePicker")
+    attributes.Add("data-datepicker", "true");
+
+    //since this is a constraint, IsRequired and other constraints
+    //won't necessarily apply in the browser, but in case script
+    //turns off readonly we want the constraints passed
+    if (ViewData.ModelMetadata.IsReadOnly)
+    {
+        attributes.Add("readonly", "readonly");
+    }
+
+    if (ViewData.ModelMetadata.IsRequired)
+    {
+        attributes.Add("required", "required");
+    }
+}
+@Html.TextBox("", ViewData.TemplateInfo.FormattedModelValue, attributes)
